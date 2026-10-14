@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domestix | Smart Household OS</title>
+    
+    <!-- Core Engine & Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --brand: #6366f1;
+            --brand-dark: #4338ca;
+            --bg-dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            overflow: hidden;
+        }
+
+        .scenic-banner {
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.25)), 
+                              url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--brand);
+            border-right: 4px solid var(--brand);
+        }
+
+        #handwriting-canvas {
+            cursor: crosshair;
+            touch-action: none;
+            background: #ffffff;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .api-log-entry { font-family: 'Courier New', monospace; font-size: 11px; }
+    </style>
+</head>
+<body class="flex h-screen w-full">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-20 shrink-0">
+        <div class="p-6 pb-4">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
+                    <i data-lucide="layout-grid" class="text-white w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-tighter text-slate-900 uppercase block leading-none">Domestix</span>
+                    <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Smart Household OS</span>
+                </div>
+            </div>
+
+            <nav class="space-y-1" id="nav-container">
+                <!-- Nav generated via JS -->
+            </nav>
+        </div>
+
+        <!-- PROFILE SWITCHER (GENDER NEUTRAL) -->
+        <div class="mt-auto p-5 border-t border-slate-100 bg-slate-50/40">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Profile</p>
+                <span id="active-role-badge" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">Admin</span>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5" id="profile-switcher">
+                <!-- Profiles generated via JS -->
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT -->
+    <main class="flex-1 flex flex-col relative overflow-hidden">
+        
+        <!-- TOP HEADER -->
+        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center justify-between z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <div id="api-status-badge" class="px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="status-text">VIRTUAL REST API: 200 OK</span>
+                </div>
+                <span id="ai-mode-pill" class="px-3 py-1.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">
+                    AI Advisor Ready
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="app.openModal('ai-coach')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>Domestix AI Coach</span>
+                </button>
+                <button onclick="app.openIngestHub('manual')" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i data-lucide="keyboard" class="w-4 h-4"></i>
+                    <span>Type & Add</span>
+                </button>
+                <button onclick="app.openIngestHub('upload')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-100 active:scale-95">
+                    <i data-lucide="scan-line" class="w-4 h-4"></i>
+                    <span>Smart Scan / Upload</span>
+                </button>
+                <div class="h-8 w-[1px] bg-slate-200 mx-1"></div>
+                <button onclick="app.openModal('settings')" title="API Key & Settings" class="p-2.5 bg-slate-50 text-slate-500 rounded-xl hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-slate-200/60">
+                    <i data-lucide="settings-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE VIEW CONTAINER -->
+        <div id="view-container" class="flex-1 overflow-y-auto p-8 custom-scrollbar relative bg-[#fcfdfe]">
+            <!-- Dynamic content injected here -->
+        </div>
+    </main>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-box" class="fixed bottom-6 right-6 z-[200] hidden bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-bold border border-white/10">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toast-msg">Saved successfully</span>
+    </div>
+
+    <!-- MODAL 1: SMART INGESTION HUB (5-WAY ENTRY + PRECISION EXPIRY) -->
+    <div id="modal-ingest-hub" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-5xl h-[86vh] rounded-[36px] shadow-2xl flex overflow-hidden border border-white/20 relative">
+            
+            <!-- Modal Tabs Sidebar -->
+            <div class="w-64 bg-slate-50 border-r border-slate-100 p-6 flex flex-col justify-between shrink-0">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-black text-slate-900">Ingestion Hub</h3>
+                        <span class="text-[10px] font-bold px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded">v2.5</span>
+                    </div>
+                    <button onclick="hub.setTab('manual')" class="hub-tab w-full text-left p-3.5 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all" data-tab="manual"><i data-lucide="keyboard" class="w-4 h-4"></i> Type Manually</button>
+                    <button onclick="hub.setTab('upload')" class="hub-tab w-full text-left p-3.5 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all" data-tab="upload"><i data-lucide="upload-cloud" class="w-4 h-4"></i> Upload Photo / Label</button>
+                    <button onclick="hub.setTab('camera')" class="hub-tab w-full text-left p-3.5 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all" data-tab="camera"><i data-lucide="camera" class="w-4 h-4"></i> Live Camera</button>
+                    <button onclick="hub.setTab('draw')" class="hub-tab w-full text-left p-3.5 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all" data-tab="draw"><i data-lucide="pen-tool" class="w-4 h-4"></i> Handwriting Pad</button>
+                    <button onclick="hub.setTab('barcode')" class="hub-tab w-full text-left p-3.5 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all" data-tab="barcode"><i data-lucide="barcode" class="w-4 h-4"></i> Barcode / SKU</button>
+                </div>
+
+                <div class="p-4 bg-indigo-50/80 rounded-2xl border border-indigo-100 space-y-2">
+                    <p class="text-[10px] font-black text-indigo-700 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Precision Expiry Engine
+                    </p>
+                    <p class="text-[10px] text-slate-600 leading-relaxed">
+                        Detects Indian date stamps (<b>EXP, BB, Best Before, PKD/MFG, DD/MM/YYYY</b>) and converts to ISO YYYY-MM-DD.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Content Panel -->
+            <div class="flex-1 flex flex-col bg-white overflow-hidden">
+                <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center shrink-0">
+                    <div>
+                        <h4 id="hub-title" class="font-black text-slate-800 text-base">Add or Scan Household Item</h4>
+                        <p class="text-xs text-slate-400">All extracted items can be verified & edited before saving</p>
+                    </div>
+                    <button onclick="app.closeModal('ingest-hub')" class="p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="p-8 flex-1 overflow-y-auto custom-scrollbar" id="hub-content">
+                    
+                    <!-- TAB 1: TYPE MANUALLY + NATURAL LANGUAGE -->
+                    <div id="pane-manual" class="hub-pane space-y-6">
+                        <div class="bg-indigo-50/60 border border-indigo-100 p-5 rounded-3xl space-y-3">
+                            <label class="text-xs font-black text-indigo-900 uppercase tracking-wider flex items-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i>
+                                Smart Natural-Language Quick Parse
+                            </label>
+                            <div class="flex gap-3">
+                                <input id="nl-quick-input" type="text" placeholder="e.g. 2L Amul Milk expiring in 3 days for ₹130" class="flex-1 bg-white border border-indigo-200 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                                <button onclick="hub.parseNaturalLanguage()" class="bg-indigo-600 text-white px-6 rounded-2xl font-bold text-xs shadow-md hover:bg-indigo-700">AI Auto-Fill</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1.5">Product Name *</label>
+                                <input id="manual-name" type="text" placeholder="e.g., Fresh Malai Paneer" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div class="col-span-2 sm:col-span-1">
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1.5">Category</label>
+                                <select id="manual-cat" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Dairy">Dairy & Milk</option>
+                                    <option value="Perishables">Fresh Produce & Perishables</option>
+                                    <option value="Bakery">Bakery & Breads</option>
+                                    <option value="Groceries">Staples & Groceries</option>
+                                    <option value="Snacks">Snacks & Beverages</option>
+                                    <option value="Medicine">Medicine & First Aid</option>
+                                    <option value="Cleaning">Cleaning & Household</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1.5">Quantity & Unit</label>
+                                <div class="flex gap-2">
+                                    <input id="manual-qty" type="number" value="1" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none">
+                                    <select id="manual-unit" class="bg-slate-50 border border-slate-200 rounded-2xl px-3 py-3 text-xs font-bold uppercase outline-none">
+                                        <option value="pcs">pcs</option>
+                                        <option value="L">L</option>
+                                        <option value="ml">ml</option>
+                                        <option value="kg">kg</option>
+                                        <option value="g">g</option>
+                                        <option value="pk">pack</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 uppercase mb-1.5">Price (₹ INR)</label>
+                                <input id="manual-price" type="number" value="60" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none">
+                            </div>
+                            <div class="col-span-2">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="text-[10px] font-black text-indigo-600 uppercase">Expiry Date (YYYY-MM-DD) *</label>
+                                    <div class="flex gap-1.5">
+                                        <button type="button" onclick="hub.setManualDateOffset(3)" class="text-[10px] font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100">+3 Days</button>
+                                        <button type="button" onclick="hub.setManualDateOffset(7)" class="text-[10px] font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100">+1 Week</button>
+                                        <button type="button" onclick="hub.setManualDateOffset(30)" class="text-[10px] font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100">+1 Month</button>
+                                        <button type="button" onclick="hub.setManualDateOffset(180)" class="text-[10px] font-bold px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100">+6 Months</button>
+                                    </div>
+                                </div>
+                                <input id="manual-exp" type="date" class="w-full bg-slate-50 border border-indigo-200 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                        </div>
+
+                        <button onclick="hub.submitManualForm()" class="w-full bg-slate-900 hover:bg-indigo-600 text-white py-4 rounded-2xl font-black text-sm shadow-xl transition-all">
+                            ADD ITEM TO INVENTORY
+                        </button>
+                    </div>
+
+                    <!-- TAB 2: UPLOAD PHOTO / LABEL (PRECISION EXPIRY) -->
+                    <div id="pane-upload" class="hub-pane hidden space-y-6 flex flex-col items-center justify-center">
+                        <div class="w-full max-w-lg border-3 border-dashed border-slate-200 rounded-[32px] p-8 hover:border-indigo-400 transition-all cursor-pointer relative group bg-slate-50/50 text-center" onclick="document.getElementById('file-input').click()">
+                            <input type="file" id="file-input" class="hidden" accept="image/*" onchange="hub.previewFile(event)">
+                            <div id="upload-idle" class="space-y-3 py-6">
+                                <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-transform">
+                                    <i data-lucide="image-plus" class="text-indigo-600 w-8 h-8"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-base font-bold text-slate-800">Upload Product Expiry Label or Receipt</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Reads EXP, Best Before, PKD/MFG, or printed store bills</p>
+                                </div>
+                            </div>
+                            <div id="upload-preview-container" class="hidden h-52 w-full rounded-2xl overflow-hidden relative bg-slate-900">
+                                <img id="upload-img-tag" class="w-full h-full object-contain">
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="text-white text-xs font-bold px-4 py-2 bg-indigo-600 rounded-lg">Change Image</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Optional Label Hints so Expiry Date NEVER Fails -->
+                        <div class="w-full max-w-lg bg-slate-50 p-5 rounded-3xl border border-slate-200/80 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-black text-slate-600 uppercase tracking-wider">Label Assist / Date Override (Optional)</span>
+                                <span class="text-[10px] font-bold text-indigo-600">100% Accuracy Guarantee</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Product Name / Text on Label</label>
+                                    <input id="upload-hint-name" type="text" placeholder="e.g. Amul Taaza Milk EXP 22/10/2026" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-indigo-600 uppercase mb-1">Exact Expiry Date (If Known)</label>
+                                    <input id="upload-hint-exp" type="date" class="w-full bg-white border border-indigo-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full max-w-lg flex gap-3">
+                            <button onclick="hub.processOCR('upload')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-black text-xs shadow-xl shadow-indigo-100 flex items-center justify-center gap-2">
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                <span>EXTRACT ITEM & EXPIRY DATE</span>
+                            </button>
+                            <button onclick="hub.resetUpload()" class="px-4 bg-slate-100 text-slate-400 rounded-2xl hover:text-rose-500"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: LIVE CAMERA -->
+                    <div id="pane-camera" class="hub-pane hidden flex flex-col items-center justify-center space-y-6">
+                        <div class="w-full max-w-lg aspect-video bg-slate-950 rounded-[32px] overflow-hidden relative shadow-xl border border-slate-800">
+                            <video id="camera-stream" class="w-full h-full object-cover" autoplay playsinline></video>
+                            <div class="absolute inset-0 border-[32px] border-black/40 pointer-events-none">
+                                <div class="w-full h-full border-2 border-indigo-400/70 border-dashed rounded-2xl flex items-center justify-center">
+                                    <span class="bg-black/60 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">Align EXP Date / Label Here</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full max-w-lg grid grid-cols-2 gap-3">
+                            <input id="camera-hint-name" type="text" placeholder="Item Name Hint (Optional)" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none">
+                            <input id="camera-hint-exp" type="date" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none">
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="hub.stopCamera()" class="px-6 py-3 rounded-xl font-bold text-xs text-slate-500 bg-slate-100">Stop Camera</button>
+                            <button onclick="hub.capturePhoto()" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black text-xs shadow-lg shadow-indigo-100">Capture & Extract Expiry</button>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: HANDWRITING PAD -->
+                    <div id="pane-draw" class="hub-pane hidden flex flex-col items-center justify-center space-y-5">
+                        <div class="w-full max-w-2xl border border-slate-200 rounded-[28px] overflow-hidden shadow-md">
+                            <div class="bg-slate-50 px-5 py-3 border-b flex justify-between items-center">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="hub.clearCanvas()" class="px-3 py-1.5 bg-white border border-slate-200 hover:bg-rose-50 hover:text-rose-600 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors">
+                                        <i data-lucide="eraser" class="w-3.5 h-3.5"></i> Clear Pad
+                                    </button>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Write Item & Expiry on Pad</span>
+                            </div>
+                            <canvas id="handwriting-canvas" width="620" height="240" class="w-full h-[240px]"></canvas>
+                        </div>
+                        <div class="w-full max-w-2xl grid grid-cols-2 gap-3">
+                            <input id="draw-hint-name" type="text" placeholder="Or type written note note here (e.g. Paneer 500g)" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none">
+                            <input id="draw-hint-exp" type="date" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none">
+                        </div>
+                        <button onclick="hub.processOCR('draw')" class="w-full max-w-2xl bg-indigo-600 text-white py-3.5 rounded-2xl font-black text-xs shadow-xl">RECOGNIZE HANDWRITING & ADD</button>
+                    </div>
+
+                    <!-- TAB 5: BARCODE / SKU LOOKUP -->
+                    <div id="pane-barcode" class="hub-pane hidden space-y-6 flex flex-col items-center justify-center text-center py-6">
+                        <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+                            <i data-lucide="scan-barcode" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold">Instant Barcode & SKU Database</h4>
+                            <p class="text-xs text-slate-400 mt-1">Click a quick Indian grocery barcode below or enter a custom SKU</p>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2 max-w-lg">
+                            <button onclick="hub.quickSKU('8901262010016')" class="px-3 py-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl text-xs font-bold transition-colors">8901262010016 (Amul Milk 1L)</button>
+                            <button onclick="hub.quickSKU('8901063012028')" class="px-3 py-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl text-xs font-bold transition-colors">8901063012028 (Britannia Bread)</button>
+                            <button onclick="hub.quickSKU('8901262150118')" class="px-3 py-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl text-xs font-bold transition-colors">8901262150118 (Fresh Paneer 200g)</button>
+                            <button onclick="hub.quickSKU('8901058851250')" class="px-3 py-2 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl text-xs font-bold transition-colors">8901058851250 (Maggi Oats Pack)</button>
+                        </div>
+                        <div class="flex gap-3 w-full max-w-sm pt-2">
+                            <input id="sku-input" type="text" placeholder="Enter Barcode / SKU..." class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+                            <button onclick="hub.lookupSKU()" class="bg-slate-900 text-white px-6 rounded-2xl font-bold text-xs">Lookup</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Footer Confirmation Area (Editable Preview Shown After Scan) -->
+                <div id="hub-confirmation" class="hidden p-8 border-t border-slate-200 bg-indigo-50/70 space-y-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h5 class="text-xs font-black text-indigo-700 uppercase tracking-widest flex items-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                                Verify & Edit Extracted Expiry Details
+                            </h5>
+                            <p id="ocr-source-badge" class="text-[11px] text-slate-500 mt-0.5">Detected via Smart Expiry Engine — adjust any field below before saving</p>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <button type="button" onclick="hub.adjustConfirmDate(3)" class="text-[10px] font-bold px-2.5 py-1 bg-white border border-indigo-200 text-indigo-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">+3 Days</button>
+                            <button type="button" onclick="hub.adjustConfirmDate(7)" class="text-[10px] font-bold px-2.5 py-1 bg-white border border-indigo-200 text-indigo-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">+1 Week</button>
+                            <button type="button" onclick="hub.adjustConfirmDate(30)" class="text-[10px] font-bold px-2.5 py-1 bg-white border border-indigo-200 text-indigo-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">+1 Month</button>
+                            <button type="button" onclick="hub.adjustConfirmDate(180)" class="text-[10px] font-bold px-2.5 py-1 bg-white border border-indigo-200 text-indigo-700 rounded-lg hover:bg-indigo-600 hover:text-white transition-colors">+6 Months</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-3">
+                        <div class="sm:col-span-2 space-y-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Product Name</label>
+                            <input type="text" id="edit-name" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Category</label>
+                            <select id="edit-cat" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold outline-none">
+                                <option value="Dairy">Dairy</option>
+                                <option value="Perishables">Perishables</option>
+                                <option value="Bakery">Bakery</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Medicine">Medicine</option>
+                                <option value="Cleaning">Cleaning</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-indigo-700 uppercase">Expiry Date *</label>
+                            <input type="date" id="edit-exp" class="w-full bg-white border-2 border-indigo-400 rounded-xl px-3 py-2 text-xs font-black text-indigo-900 outline-none">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Qty / Unit / ₹</label>
+                            <div class="flex gap-1.5">
+                                <input type="number" id="edit-qty" class="w-14 bg-white border border-slate-200 rounded-xl px-2 py-2 text-xs font-bold outline-none">
+                                <input type="text" id="edit-unit" class="w-12 bg-white border border-slate-200 rounded-xl px-2 py-2 text-xs uppercase font-bold outline-none">
+                                <input type="number" id="edit-price" class="w-full bg-white border border-slate-200 rounded-xl px-2 py-2 text-xs font-bold outline-none" placeholder="₹">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="hub.commitItem()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-3.5 rounded-xl font-black text-xs shadow-lg transition-all">CONFIRM & SAVE TO INVENTORY</button>
+                        <button onclick="hub.cancelConfirmation()" class="px-6 py-3.5 bg-white text-slate-500 rounded-xl font-bold text-xs border border-slate-200 hover:text-rose-600">Back</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Overlay -->
+            <div id="ocr-overlay" class="absolute inset-0 bg-white/90 backdrop-blur-md hidden flex items-center justify-center z-50">
+                <div class="text-center">
+                    <div class="w-14 h-14 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4"></div>
+                    <p class="text-xs font-black text-indigo-600 uppercase tracking-widest animate-pulse">Parsing Image & Expiry Date...</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Checking EXP, Best Before, DD/MM/YYYY & Shelf-Life</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: DOMESTIX AI HOUSEHOLD COACH -->
+    <div id="modal-ai-coach" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[82vh]">
+            <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-black text-base">Domestix AI Household Advisor</h3>
+                        <p class="text-[11px] text-slate-400">Smart Expiry Rescue Recipes, Storage Tips & Bill Insights</p>
+                    </div>
+                </div>
+                <button onclick="app.closeModal('ai-coach')" class="p-2 text-slate-400 hover:text-white rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="p-6 flex-1 overflow-y-auto space-y-4 custom-scrollbar" id="ai-chat-history">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 space-y-3">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="app.askAI('What vegetarian meals can I cook with my expiring items?')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-400 text-slate-700">🍲 Rescue Recipes for Expiring Stock</button>
+                    <button onclick="app.askAI('Give me storage tips to extend shelf life of my current inventory.')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-400 text-slate-700">❄️ Storage & Shelf-Life Tips</button>
+                    <button onclick="app.askAI('How can I optimize my upcoming bills and appliance maintenance?')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-xl hover:border-indigo-400 text-slate-700">⚡ Appliance & Bill Check</button>
+                </div>
+                <div class="flex gap-2">
+                    <input id="ai-custom-prompt" type="text" placeholder="Ask Domestix AI anything about your stock, recipes, or appliances..." class="flex-1 bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="if(event.key==='Enter') app.askAI()">
+                    <button onclick="app.askAI()" class="bg-indigo-600 text-white px-6 rounded-2xl font-bold text-xs">Ask AI</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: SETTINGS & GEMINI API KEY -->
+    <div id="modal-settings" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden border border-slate-100 p-8 space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-black text-slate-900">Platform Settings & AI Key</h3>
+                <button onclick="app.closeModal('settings')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Google Gemini API Key (Optional)</label>
+                    <p class="text-[11px] text-slate-400 mb-2">Paste your key from Google AI Studio for live Vision OCR on uploaded expiry labels. Leave blank to use the built-in Smart Offline Engine.</p>
+                    <input id="settings-gemini-key" type="password" placeholder="AIzaSy..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">Reset Demo Database</p>
+                        <p class="text-[10px] text-slate-400">Restore default sample inventory, appliances & bills</p>
+                    </div>
+                    <button onclick="engine.resetDemoData()" class="px-3 py-1.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-100">Reset</button>
+                </div>
+            </div>
+
+            <button onclick="app.saveSettings()" class="w-full bg-indigo-600 text-white py-3.5 rounded-2xl font-black text-xs shadow-lg">Save Settings</button>
+        </div>
+    </div>
+
+<script>
+/**
+ * DOMESTIX ENTERPRISE CORE ENGINE (100% STANDALONE SINGLE-FILE OS)
+ */
+
+const STATE_KEY = 'domestix_enterprise_v3';
+const API_LOG = [];
+
+// GENDER-NEUTRAL PROFILES WITH STANDARD VECTOR ICONS
+const PROFILES = [
+    { name: 'Kiran', role: 'Household Admin', icon: 'shield', color: 'indigo' },
+    { name: 'Arya', role: 'Kitchen & Stock', icon: 'sparkles', color: 'emerald' },
+    { name: 'Dev', role: 'Appliances/Bills', icon: 'wrench', color: 'amber' },
+    { name: 'Niki', role: 'Shopping Lead', icon: 'shopping-bag', color: 'sky' }
+];
+
+// HELPER FOR DYNAMIC DATES SO DEMO IS ALWAYS FRESH
+function offsetDate(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split('T')[0];
+}
+
+const DEFAULT_DB = {
+    inventory: [
+        { id: 1, name: 'Amul Taaza Milk', qty: 2, unit: 'L', exp: offsetDate(2), cat: 'Dairy', price: 112, tip: 'Store on middle fridge shelf at 4°C, not in the door rack.' },
+        { id: 2, name: 'Fresh Malai Paneer', qty: 200, unit: 'g', exp: offsetDate(3), cat: 'Perishables', price: 95, tip: 'Submerge in fresh water in an airtight box; change water every 2 days.' },
+        { id: 3, name: 'Whole Wheat Bread', qty: 1, unit: 'pk', exp: offsetDate(-1), cat: 'Bakery', price: 50, tip: 'Keep in a cool dry dark place or freeze slices to prevent mold.' },
+        { id: 4, name: 'Quaker Rolled Oats', qty: 1, unit: 'kg', exp: offsetDate(120), cat: 'Groceries', price: 199, tip: 'Transfer to an airtight glass jar with a bay leaf to prevent moisture.' },
+        { id: 5, name: 'Paracetamol 650mg', qty: 15, unit: 'pcs', exp: offsetDate(240), cat: 'Medicine', price: 35, tip: 'Store in a dry cabinet away from direct sunlight.' }
+    ],
+    shopping: [
+        { id: 101, name: 'Greek Yogurt / Curd', qty: 1, unit: 'pk', price: 65, cat: 'Dairy', assigned: 'Arya', checked: false },
+        { id: 102, name: 'Dishwash Gel Refill', qty: 1, unit: 'L', price: 145, cat: 'Cleaning', assigned: 'Niki', checked: true }
+    ],
+    assets: [
+        { id: 201, name: 'Blue Star Split AC', serial: 'BS-AC-9021', warranty: offsetDate(320), service: offsetDate(14), note: 'Clean indoor air filter mesh & check outdoor condenser fan' },
+        { id: 202, name: 'LG Smart Frost-Free Fridge', serial: 'LG-RF-4410', warranty: offsetDate(540), service: offsetDate(60), note: 'Vacuum rear condenser coils & inspect door gasket seal' },
+        { id: 203, name: 'Aquaguard RO Purifier', serial: 'AQ-RO-1182', warranty: offsetDate(25), service: offsetDate(-3), note: 'Replace sediment & carbon cartridge filters' }
+    ],
+    bills: [
+        { id: 301, name: 'MSEDCL Electricity Bill', amount: 1840, due: offsetDate(4), assigned: 'Kiran', status: 'Unpaid' },
+        { id: 302, name: 'JioFiber Broadband Wi-Fi', amount: 999, due: offsetDate(9), assigned: 'Dev', status: 'Unpaid' },
+        { id: 303, name: 'Society Maintenance', amount: 2500, due: offsetDate(-5), assigned: 'Kiran', status: 'Paid' }
+    ],
+    completedTasks: [
+        { id: 901, title: 'Paid Society Maintenance (₹2500)', date: offsetDate(-5), by: 'Kiran' }
+    ],
+    config: { activeProfile: 'Kiran', geminiKey: '', taskFilter: 'upcoming' }
+};
+
+let db = JSON.parse(localStorage.getItem(STATE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DB));
+
+// --- STORAGE TIP GENERATOR ---
+function getStorageTip(name, cat) {
+    const n = (name || '').toLowerCase();
+    if (n.includes('milk')) return 'Keep on middle refrigerator shelf (4°C), avoid fridge door.';
+    if (n.includes('paneer')) return 'Submerge block in cold water inside an airtight container.';
+    if (n.includes('bread')) return 'Seal tightly with a clip; refrigerate or freeze in humid weather.';
+    if (n.includes('oat') || n.includes('rice') || n.includes('dal')) return 'Store in an airtight container in a cool, dry pantry.';
+    if (cat === 'Medicine') return 'Keep in original blister pack inside a cool, dry first-aid box.';
+    if (cat === 'Perishables') return 'Store in crisper drawer wrapped in a breathable paper towel.';
+    return 'Keep sealed in a cool, dry place away from direct heat.';
+}
+
+// --- BUILT-IN VIRTUAL REST SERVER (NO EXTERNAL NODE.JS REQUIRED) ---
+const engine = {
+    init() {
+        this.logAPI('GET', '200 OK - Loaded Household Database Snapshot', '/api/v1/household');
+        this.updateHeaderBadges();
+        app.render();
+    },
+
+    save(actionDesc = 'Updated state snapshot') {
+        localStorage.setItem(STATE_KEY, JSON.stringify(db));
+        this.logAPI('POST', `200 OK - ${actionDesc}`, '/api/v1/sync');
+        this.updateHeaderBadges();
+        app.render();
+    },
+
+    resetDemoData() {
+        db = JSON.parse(JSON.stringify(DEFAULT_DB));
+        localStorage.setItem(STATE_KEY, JSON.stringify(db));
+        this.logAPI('DELETE', '200 OK - Database Reset to Factory Seed', '/api/v1/reset');
+        app.closeModal('settings');
+        app.toast('Demo database restored!');
+        app.render();
+    },
+
+    logAPI(method, msg, endpoint) {
+        API_LOG.unshift({
+            timestamp: new Date().toLocaleTimeString(),
+            method,
+            msg,
+            endpoint
+        });
+        if (API_LOG.length > 25) API_LOG.pop();
+    },
+
+    updateHeaderBadges() {
+        const pill = document.getElementById('ai-mode-pill');
+        if (pill) {
+            pill.innerText = db.config.geminiKey ? 'GEMINI VISION: LIVE' : 'SMART AI ENGINE: ACTIVE';
+        }
+    }
+};
+
+// --- MAIN UI CONTROLLER ---
+const app = {
+    views: [
+        { id: 'dashboard', label: 'Overview', icon: 'layout-dashboard' },
+        { id: 'inventory', label: 'Inventory', icon: 'box' },
+        { id: 'shopping', label: 'Shopping List', icon: 'shopping-cart' },
+        { id: 'assets', label: 'Appliances', icon: 'wrench' },
+        { id: 'bills', label: 'Utilities & Bills', icon: 'calendar-clock' },
+        { id: 'analytics', label: 'Analytics', icon: 'bar-chart-3' },
+        { id: 'backend', label: 'Architecture', icon: 'database' }
+    ],
+    currentView: 'dashboard',
+    invSearch: '',
+    invCat: 'ALL',
+
+    render() {
+        this.renderNav();
+        this.renderProfiles();
+        this.renderView();
+        lucide.createIcons();
+    },
+
+    toast(msg) {
+        const box = document.getElementById('toast-box');
+        document.getElementById('toast-msg').innerText = msg;
+        box.classList.remove('hidden');
+        setTimeout(() => box.classList.add('hidden'), 2800);
+    },
+
+    renderNav() {
+        const container = document.getElementById('nav-container');
+        container.innerHTML = this.views.map(v => `
+            <button onclick="app.navigate('${v.id}')" class="w-full flex items-center gap-3.5 px-5 py-3 text-xs font-bold rounded-2xl transition-all group ${this.currentView === v.id ? 'sidebar-active' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}">
+                <i data-lucide="${v.icon}" class="w-4 h-4 transition-transform group-hover:scale-110"></i>
+                <span>${v.label}</span>
+            </button>
+        `).join('');
+    },
+
+    renderProfiles() {
+        const activeObj = PROFILES.find(p => p.name === db.config.activeProfile) || PROFILES[0];
+        const roleBadge = document.getElementById('active-role-badge');
+        if (roleBadge) roleBadge.innerText = activeObj.role;
+
+        const container = document.getElementById('profile-switcher');
+        container.innerHTML = PROFILES.map(p => `
+            <button onclick="app.setProfile('${p.name}')" class="flex flex-col items-center py-2.5 px-1 rounded-xl transition-all border ${db.config.activeProfile === p.name ? 'bg-slate-900 text-white border-slate-900 shadow-md' : 'bg-white border-slate-200/70 hover:bg-slate-100 text-slate-600'}">
+                <i data-lucide="${p.icon}" class="w-4 h-4 mb-1 ${db.config.activeProfile === p.name ? 'text-indigo-400' : 'text-slate-400'}"></i>
+                <span class="text-[9px] font-black uppercase tracking-tighter">${p.name}</span>
+            </button>
+        `).join('');
+    },
+
+    navigate(id) {
+        this.currentView = id;
+        engine.logAPI('GET', `200 OK - Rendered view: ${id}`, `/api/v1/views/${id}`);
+        this.render();
+    },
+
+    setProfile(name) {
+        db.config.activeProfile = name;
+        this.toast(`Switched active profile to ${name}`);
+        engine.save(`Active profile changed to ${name}`);
+    },
+
+    daysDiff(dateStr) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const target = new Date(dateStr);
+        target.setHours(0, 0, 0, 0);
+        return Math.round((target - today) / (1000 * 60 * 60 * 24));
+    },
+
+    renderView() {
+        const container = document.getElementById('view-container');
+        container.innerHTML = '';
+        
+        switch (this.currentView) {
+            case 'dashboard': this.viewDashboard(container); break;
+            case 'inventory': this.viewInventory(container); break;
+            case 'shopping': this.viewShopping(container); break;
+            case 'assets': this.viewAssets(container); break;
+            case 'bills': this.viewBills(container); break;
+            case 'analytics': this.viewAnalytics(container); break;
+            case 'backend': this.viewBackend(container); break;
+        }
+    },
+
+    // --- VIEW 1: OVERVIEW DASHBOARD & TASK LIFECYCLE ---
+    viewDashboard(el) {
+        const expSoon = db.inventory.filter(i => {
+            const d = this.daysDiff(i.exp);
+            return d >= 0 && d <= 4;
+        });
+        const expired = db.inventory.filter(i => this.daysDiff(i.exp) < 0);
+        const unpaidBills = db.bills.filter(b => b.status === 'Unpaid');
+        const pendingAmount = unpaidBills.reduce((a, b) => a + Number(b.amount), 0);
+
+        // Compile Unified Tasks (Upcoming vs Overdue vs Completed)
+        const upcomingTasks = [
+            ...expSoon.map(i => ({ title: `Consume ${i.name} (${i.qty}${i.unit})`, sub: `Expires in ${this.daysDiff(i.exp)} days (${i.exp})`, badge: 'EXPIRY SOON', color: 'amber', action: `app.consumeInventory(${i.id})`, btnText: 'Mark Used' })),
+            ...unpaidBills.filter(b => this.daysDiff(b.due) >= 0).map(b => ({ title: `Pay ${b.name} (₹${b.amount})`, sub: `Due on ${b.due} • Assigned: ${b.assigned}`, badge: 'BILL DUE', color: 'indigo', action: `app.payBill(${b.id})`, btnText: 'Pay ₹' + b.amount })),
+            ...db.assets.filter(a => this.daysDiff(a.service) >= 0 && this.daysDiff(a.service) <= 30).map(a => ({ title: `${a.name} Maintenance`, sub: `Scheduled: ${a.service} (${a.note})`, badge: 'MAINTENANCE', color: 'emerald', action: `app.completeService(${a.id})`, btnText: 'Log Done' }))
+        ];
+
+        const overdueTasks = [
+            ...expired.map(i => ({ title: `Expired: ${i.name}`, sub: `Expired on ${i.exp} (${Math.abs(this.daysDiff(i.exp))}d ago)`, badge: 'EXPIRED', color: 'rose', action: `app.consumeInventory(${i.id})`, btnText: 'Discard & Re-list' })),
+            ...unpaidBills.filter(b => this.daysDiff(b.due) < 0).map(b => ({ title: `Overdue Bill: ${b.name} (₹${b.amount})`, sub: `Was due on ${b.due}`, badge: 'OVERDUE BILL', color: 'rose', action: `app.payBill(${b.id})`, btnText: 'Pay Now' })),
+            ...db.assets.filter(a => this.daysDiff(a.service) < 0).map(a => ({ title: `Overdue Service: ${a.name}`, sub: `Due ${a.service} • ${a.note}`, badge: 'SERVICE OVERDUE', color: 'rose', action: `app.completeService(${a.id})`, btnText: 'Complete' }))
+        ];
+
+        const activeTab = db.config.taskFilter || 'upcoming';
+        const displayTasks = activeTab === 'upcoming' ? upcomingTasks : (activeTab === 'overdue' ? overdueTasks : db.completedTasks);
+
+        el.innerHTML = `
+            <div class="space-y-8">
+                <!-- SCENIC HERO BANNER -->
+                <div class="scenic-banner w-full rounded-[36px] p-10 shadow-xl overflow-hidden relative flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+                    <div class="space-y-2 max-w-xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest">
+                            <i data-lucide="home" class="w-3.5 h-3.5"></i> Active Operator: ${db.config.activeProfile}
+                        </div>
+                        <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">Domestic Operations Center.</h1>
+                        <p class="text-white/80 text-xs font-medium">Centralized Inventory, Expiry Prevention, Appliance Warranties & Recurring Bills.</p>
+                    </div>
+
+                    <!-- Quick Natural Language Add Inside Hero -->
+                    <div class="glass p-4 rounded-3xl w-full md:w-96 shadow-lg">
+                        <p class="text-[10px] font-black text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                            <i data-lucide="zap" class="w-3.5 h-3.5 text-indigo-600"></i> Instant Quick-Add to Inventory
+                        </p>
+                        <div class="flex gap-2">
+                            <input id="hero-quick-input" type="text" placeholder="e.g. 2L Milk, Paneer 200g..." class="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="if(event.key==='Enter') app.quickHeroAdd()">
+                            <button onclick="app.quickHeroAdd()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 KPI STAT CARDS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    ${this.cardStat('Total Stock Items', db.inventory.length, 'package', 'indigo', 'inventory')}
+                    ${this.cardStat('Expiring / Expired', expSoon.length + expired.length, 'alert-triangle', 'amber', 'inventory')}
+                    ${this.cardStat('Appliances Tracked', db.assets.length, 'shield-check', 'emerald', 'assets')}
+                    ${this.cardStat('Pending Bills', '₹' + pendingAmount, 'indian-rupee', 'rose', 'bills')}
+                </div>
+
+                <!-- TASK LIFECYCLE CENTER + AI RESCUE RECIPE WIDGET -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white rounded-[32px] border border-slate-200/80 p-7 shadow-sm space-y-5">
+                        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-lg font-black text-slate-900">Unified Task & Reminder Center</h3>
+                                <p class="text-xs text-slate-400">Tracks expiry alerts, maintenance schedules & bill deadlines</p>
+                            </div>
+                            <div class="flex bg-slate-100 p-1 rounded-xl gap-1">
+                                <button onclick="app.setTaskTab('upcoming')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab==='upcoming'?'bg-white text-indigo-600 shadow-sm':'text-slate-500'}">Upcoming (${upcomingTasks.length})</button>
+                                <button onclick="app.setTaskTab('overdue')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab==='overdue'?'bg-white text-rose-600 shadow-sm':'text-slate-500'}">Overdue (${overdueTasks.length})</button>
+                                <button onclick="app.setTaskTab('completed')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab==='completed'?'bg-white text-emerald-600 shadow-sm':'text-slate-500'}">Completed (${db.completedTasks.length})</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar pr-1">
+                            ${activeTab === 'completed' ? (
+                                db.completedTasks.length === 0 ? `<p class="text-center text-slate-400 py-8 text-xs font-bold">No completed tasks logged yet.</p>` :
+                                db.completedTasks.map(c => `
+                                    <div class="flex items-center justify-between p-4 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
+                                        <div class="flex items-center gap-3">
+                                            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+                                            <div>
+                                                <p class="text-xs font-bold text-slate-800">${c.title}</p>
+                                                <p class="text-[10px] text-slate-400">Completed on ${c.date} by ${c.by}</p>
+                                            </div>
+                                        </div>
+                                        <span class="text-[10px] font-black px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg uppercase">Done</span>
+                                    </div>
+                                `).join('')
+                            ) : (
+                                displayTasks.length === 0 ? `<p class="text-center text-slate-400 py-10 text-xs font-bold">All clear! Zero ${activeTab} tasks right now.</p>` :
+                                displayTasks.map(t => `
+                                    <div class="flex items-center justify-between p-4 bg-slate-50 hover:bg-white border border-slate-200/70 rounded-2xl transition-all">
+                                        <div class="space-y-0.5">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[9px] font-black px-2 py-0.5 rounded bg-${t.color}-100 text-${t.color}-700 uppercase">${t.badge}</span>
+                                                <p class="text-xs font-bold text-slate-800">${t.title}</p>
+                                            </div>
+                                            <p class="text-[11px] text-slate-500">${t.sub}</p>
+                                        </div>
+                                        <button onclick="${t.action}" class="px-3.5 py-2 bg-slate-900 hover:bg-indigo-600 text-white rounded-xl text-[11px] font-bold transition-colors shrink-0">
+                                            ${t.btnText}
+                                        </button>
+                                    </div>
+                                `).join('')
+                            )}
+                        </div>
+                    </div>
+
+                    <!-- PROACTIVE AI ADVISOR CARD -->
+                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-[32px] p-7 shadow-xl flex flex-col justify-between space-y-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> AI Expiry Optimizer
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-bold">IEEE 2026 Model</span>
+                            </div>
+                            <h4 class="text-xl font-black leading-snug">Smart Recipe & Storage Insights</h4>
+                            <div class="p-4 bg-white/10 rounded-2xl border border-white/10 space-y-2 text-xs leading-relaxed text-slate-200">
+                                ${expSoon.length > 0 ? `
+                                    <p class="font-bold text-amber-300">⚠️ Expiring Within 4 Days: ${expSoon.map(e => e.name).join(', ')}</p>
+                                    <p><b>AI Suggestion:</b> Prepare <i>Paneer Bhurji Wrap</i> or <i>High-Protein Oats Porridge</i> tonight to utilize ${expSoon[0].name} and save ₹${expSoon.reduce((a,b)=>a+b.price,0)} from food waste!</p>
+                                ` : `
+                                    <p class="font-bold text-emerald-300">✅ Zero Immediate Food Waste Risk!</p>
+                                    <p>All perishables are within safe shelf-life windows. Keep dairy at 4°C for maximum freshness.</p>
+                                `}
+                            </div>
+                        </div>
+
+                        <button onclick="app.openModal('ai-coach')" class="w-full bg-white text-slate-900 hover:bg-indigo-50 py-3.5 rounded-2xl font-black text-xs transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="message-square-plus" class="w-4 h-4 text-indigo-600"></i>
+                            <span>Open Full AI Household Coach</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    setTaskTab(tab) {
+        db.config.taskFilter = tab;
+        this.render();
+    },
+
+    quickHeroAdd() {
+        const input = document.getElementById('hero-quick-input');
+        if (!input || !input.value.trim()) return;
+        const raw = input.value.trim();
+        db.inventory.unshift({
+            id: Date.now(),
+            name: raw,
+            qty: 1,
+            unit: 'pcs',
+            exp: offsetDate(7),
+            cat: 'Groceries',
+            price: 60,
+            tip: getStorageTip(raw, 'Groceries')
+        });
+        input.value = '';
+        this.toast(`Added "${raw}" to Inventory (+7d expiry)`);
+        engine.save(`Quick-added ${raw}`);
+    },
+
+    cardStat(label, val, icon, color, targetView) {
+        return `
+            <div onclick="app.navigate('${targetView}')" class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-200 cursor-pointer transition-all">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl bg-${color}-50 text-${color}-600 flex items-center justify-center">
+                        <i data-lucide="${icon}" class="w-5 h-5"></i>
+                    </div>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-300"></i>
+                </div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">${label}</p>
+                <h4 class="text-3xl font-black text-slate-900">${val}</h4>
+            </div>
+        `;
+    },
+
+    // --- VIEW 2: SMART INVENTORY & EXPIRY TRACKER ---
+    viewInventory(el) {
+        const filtered = db.inventory.filter(item => {
+            const matchSearch = item.name.toLowerCase().includes(this.invSearch.toLowerCase());
+            const matchCat = this.invCat === 'ALL' || item.cat === this.invCat;
+            return matchSearch && matchCat;
+        });
+
+        el.innerHTML = `
+            <div class="space-y-6">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Household Inventory & Expiry Ledger</h2>
+                        <p class="text-xs text-slate-400">Color-coded shelf-life tracking with proactive AI storage advice</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="relative">
+                            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" value="${this.invSearch}" oninput="app.invSearch=this.value; app.renderView(); lucide.createIcons();" placeholder="Search stock..." class="pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <select onchange="app.invCat=this.value; app.renderView(); lucide.createIcons();" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none">
+                            <option value="ALL" ${this.invCat==='ALL'?'selected':''}>All Categories</option>
+                            <option value="Dairy" ${this.invCat==='Dairy'?'selected':''}>Dairy</option>
+                            <option value="Perishables" ${this.invCat==='Perishables'?'selected':''}>Perishables</option>
+                            <option value="Bakery" ${this.invCat==='Bakery'?'selected':''}>Bakery</option>
+                            <option value="Groceries" ${this.invCat==='Groceries'?'selected':''}>Groceries</option>
+                            <option value="Snacks" ${this.invCat==='Snacks'?'selected':''}>Snacks</option>
+                            <option value="Medicine" ${this.invCat==='Medicine'?'selected':''}>Medicine</option>
+                            <option value="Cleaning" ${this.invCat==='Cleaning'?'selected':''}>Cleaning</option>
+                        </select>
+                        <button onclick="app.openIngestHub('manual')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add Item
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-[32px] border border-slate-200/80 overflow-hidden shadow-sm">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            <tr>
+                                <th class="px-6 py-4">Product & Price</th>
+                                <th class="px-6 py-4">Category</th>
+                                <th class="px-6 py-4">Quantity</th>
+                                <th class="px-6 py-4">Expiry Date (Click to Edit)</th>
+                                <th class="px-6 py-4">AI Storage Tip</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs">
+                            ${filtered.map(i => {
+                                const diff = this.daysDiff(i.exp);
+                                const col = diff < 0 ? 'rose' : (diff <= 4 ? 'amber' : 'emerald');
+                                const badgeText = diff < 0 ? `EXPIRED (${Math.abs(diff)}d ago)` : (diff === 0 ? 'EXPIRES TODAY' : `${diff}d left`);
+                                return `
+                                    <tr class="hover:bg-slate-50/70 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <p class="font-bold text-slate-900 text-sm">${i.name}</p>
+                                            <p class="text-[11px] text-slate-400 font-semibold">₹${i.price || 0}</p>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-[10px] font-black text-slate-600 uppercase">${i.cat}</span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="inline-flex items-center gap-2 bg-slate-100 rounded-xl p-1">
+                                                <button onclick="app.adjustQty(${i.id}, -1)" class="w-6 h-6 rounded-lg bg-white text-slate-700 font-bold hover:bg-slate-200">-</button>
+                                                <span class="font-black text-slate-800 px-1">${i.qty} ${i.unit}</span>
+                                                <button onclick="app.adjustQty(${i.id}, 1)" class="w-6 h-6 rounded-lg bg-white text-slate-700 font-bold hover:bg-slate-200">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <input type="date" value="${i.exp}" onchange="app.updateItemExpiry(${i.id}, this.value)" class="bg-transparent border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold text-slate-800 focus:border-indigo-500 outline-none">
+                                                <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-${col}-50 text-${col}-700 border border-${col}-200">
+                                                    ${badgeText}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 max-w-xs">
+                                            <p class="text-[11px] text-slate-500 leading-snug flex items-start gap-1.5">
+                                                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-500 shrink-0 mt-0.5"></i>
+                                                <span>${i.tip || getStorageTip(i.name, i.cat)}</span>
+                                            </p>
+                                        </td>
+                                        <td class="px-6 py-4 text-right space-x-1">
+                                            <button onclick="app.consumeInventory(${i.id})" title="Mark Consumed & Add to Shopping List" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white rounded-xl font-bold text-[11px] transition-colors">
+                                                Consume
+                                            </button>
+                                            <button onclick="app.deleteItem(${i.id})" title="Delete" class="p-1.5 text-slate-300 hover:text-rose-600 transition-colors">
+                                                <i data-lucide="trash-2" class="w-4 h-4 inline"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    },
+
+    adjustQty(id, delta) {
+        const item = db.inventory.find(i => i.id === id);
+        if (!item) return;
+        item.qty = Math.max(0, Number(item.qty) + delta);
+        if (item.qty === 0) {
+            this.consumeInventory(id);
+            return;
+        }
+        engine.save(`Adjusted quantity for ${item.name}`);
+    },
+
+    updateItemExpiry(id, newDate) {
+        const item = db.inventory.find(i => i.id === id);
+        if (item && newDate) {
+            item.exp = newDate;
+            this.toast(`Updated expiry date for ${item.name} to ${newDate}`);
+            engine.save(`Updated expiry date for ${item.name}`);
+        }
+    },
+
+    consumeInventory(id) {
+        const item = db.inventory.find(i => i.id === id);
+        if (!item) return;
+        db.inventory = db.inventory.filter(i => i.id !== id);
+        // Auto-add to shopping list for smart replenishment
+        if (!db.shopping.some(s => s.name.toLowerCase() === item.name.toLowerCase())) {
+            db.shopping.push({
+                id: Date.now(),
+                name: item.name,
+                qty: 1,
+                unit: item.unit || 'pcs',
+                price: item.price || 50,
+                cat: item.cat || 'Groceries',
+                assigned: db.config.activeProfile,
+                checked: false
+            });
+        }
+        db.completedTasks.unshift({
+            id: Date.now(),
+            title: `Consumed & Replenished: ${item.name}`,
+            date: offsetDate(0),
+            by: db.config.activeProfile
+        });
+        this.toast(`Consumed ${item.name} & added to Shopping List!`);
+        engine.save(`Consumed ${item.name}`);
+    },
+
+    deleteItem(id) {
+        db.inventory = db.inventory.filter(i => i.id !== id);
+        this.toast('Item removed from inventory');
+        engine.save('Deleted inventory item');
+    },
+
+    // --- VIEW 3: SMART SHOPPING LIST ---
+    viewShopping(el) {
+        const checkedCount = db.shopping.filter(s => s.checked).length;
+        el.innerHTML = `
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Smart Shopping List & Replenishment</h2>
+                        <p class="text-xs text-slate-400">Checked items automatically move into Household Inventory with calculated expiry dates</p>
+                    </div>
+                    <button onclick="app.checkoutShopping()" ${checkedCount===0?'disabled':''} class="bg-indigo-600 disabled:opacity-40 hover:bg-indigo-700 text-white px-6 py-3 rounded-2xl font-black text-xs shadow-lg transition-all flex items-center gap-2">
+                        <i data-lucide="check-check" class="w-4 h-4"></i>
+                        <span>PROCESS PURCHASED TO INVENTORY (${checkedCount})</span>
+                    </button>
+                </div>
+
+                <!-- Quick Suggestions -->
+                <div class="bg-indigo-50/70 border border-indigo-100 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+                    <span class="text-xs font-bold text-indigo-900 flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i> 1-Click Restock Suggestions:
+                    </span>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="app.quickShop('Amul Butter 100g', 58, 'Dairy')" class="px-3 py-1 bg-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors">+ Amul Butter (₹58)</button>
+                        <button onclick="app.quickShop('Fresh Tomatoes 1kg', 40, 'Perishables')" class="px-3 py-1 bg-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors">+ Tomatoes 1kg (₹40)</button>
+                        <button onclick="app.quickShop('Tata Tea Gold 250g', 140, 'Groceries')" class="px-3 py-1 bg-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors">+ Tea Powder (₹140)</button>
+                        <button onclick="app.quickShop('Surf Excel Liquid 1L', 210, 'Cleaning')" class="px-3 py-1 bg-white border border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors">+ Surf Excel (₹210)</button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[32px] border border-slate-200/80 p-7 shadow-sm space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                        <input id="shop-input" type="text" placeholder="Type item name (e.g. Brown Bread)..." class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500" onkeydown="if(event.key==='Enter') app.addShopItem()">
+                        <input id="shop-price" type="number" placeholder="Est. ₹ Price" value="50" class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold outline-none">
+                        <button onclick="app.addShopItem()" class="bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl font-black text-xs py-3 transition-colors">+ Add to List</button>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        ${db.shopping.length === 0 ? `<p class="text-center text-slate-400 py-8 text-xs font-bold">Your shopping list is empty.</p>` :
+                        db.shopping.map(s => `
+                            <div class="flex items-center justify-between p-4 ${s.checked ? 'bg-emerald-50/50 border-emerald-200' : 'bg-slate-50 border-slate-200/70'} rounded-2xl border transition-all">
+                                <label class="flex items-center gap-3.5 cursor-pointer flex-1">
+                                    <input type="checkbox" ${s.checked ? 'checked' : ''} onchange="app.toggleShop(${s.id})" class="w-5 h-5 rounded-lg text-indigo-600 focus:ring-indigo-500">
+                                    <div>
+                                        <p class="text-sm font-bold ${s.checked ? 'line-through text-slate-400' : 'text-slate-800'}">${s.name}</p>
+                                        <p class="text-[10px] font-bold text-slate-400 uppercase">${s.cat || 'Groceries'} • Est. ₹${s.price || 50} • Assigned: ${s.assigned || db.config.activeProfile}</p>
+                                    </div>
+                                </label>
+                                <button onclick="app.deleteShop(${s.id})" class="p-2 text-slate-300 hover:text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    quickShop(name, price, cat) {
+        db.shopping.push({ id: Date.now(), name, qty: 1, unit: 'pcs', price, cat, assigned: db.config.activeProfile, checked: false });
+        this.toast(`Added ${name} to Shopping List`);
+        engine.save(`Added ${name} to shopping list`);
+    },
+
+    addShopItem() {
+        const input = document.getElementById('shop-input');
+        const price = document.getElementById('shop-price');
+        if (!input.value.trim()) return;
+        db.shopping.push({
+            id: Date.now(),
+            name: input.value.trim(),
+            qty: 1,
+            unit: 'pcs',
+            price: parseFloat(price.value) || 50,
+            cat: 'Groceries',
+            assigned: db.config.activeProfile,
+            checked: false
+        });
+        input.value = '';
+        engine.save('Added manual shopping item');
+    },
+
+    toggleShop(id) {
+        const item = db.shopping.find(s => s.id === id);
+        if (item) item.checked = !item.checked;
+        engine.save('Toggled shopping list item');
+    },
+
+    checkoutShopping() {
+        const bought = db.shopping.filter(s => s.checked);
+        if (bought.length === 0) return;
+        bought.forEach(item => {
+            const shelfDays = item.cat === 'Dairy' ? 5 : (item.cat === 'Perishables' ? 7 : 90);
+            db.inventory.unshift({
+                id: Date.now() + Math.random(),
+                name: item.name,
+                qty: item.qty || 1,
+                unit: item.unit || 'pcs',
+                exp: offsetDate(shelfDays),
+                cat: item.cat || 'Groceries',
+                price: item.price || 60,
+                tip: getStorageTip(item.name, item.cat)
+            });
+        });
+        db.shopping = db.shopping.filter(s => !s.checked);
+        this.toast(`Moved ${bought.length} purchased item(s) to Inventory!`);
+        engine.save('Checked out shopping items to inventory');
+        this.navigate('inventory');
+    },
+
+    deleteShop(id) {
+        db.shopping = db.shopping.filter(s => s.id !== id);
+        engine.save('Removed shopping item');
+    },
+
+    // --- VIEW 4: APPLIANCE MAINTENANCE & WARRANTY VAULT ---
+    viewAssets(el) {
+        el.innerHTML = `
+            <div class="space-y-6">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">Appliance Maintenance & Warranty Vault</h2>
+                        <p class="text-xs text-slate-400">Preventive service scheduling and warranty expiry protection</p>
+                    </div>
+                </div>
+
+                <!-- Add New Appliance Bar -->
+                <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-3">
+                    <input id="asset-name" type="text" placeholder="Appliance Name (e.g. Bosch Washing Machine)" class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none">
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Warranty End Date</label>
+                        <input id="asset-warranty" type="date" value="${offsetDate(365)}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] font-bold text-slate-400 uppercase mb-0.5">Next Service Date</label>
+                        <input id="asset-service" type="date" value="${offsetDate(60)}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold outline-none">
+                    </div>
+                    <button onclick="app.addAsset()" class="bg-slate-900 hover:bg-indigo-600 text-white rounded-xl font-black text-xs py-2.5 transition-colors">+ Register Asset</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    ${db.assets.map(a => {
+                        const wDays = this.daysDiff(a.warranty);
+                        const sDays = this.daysDiff(a.service);
+                        return `
+                            <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-5">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-start">
+                                        <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                            <i data-lucide="cpu" class="w-5 h-5"></i>
+                                        </div>
+                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${wDays > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'}">
+                                            ${wDays > 0 ? `Warranty: ${wDays}d left` : 'Warranty Expired'}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-black text-base text-slate-900">${a.name}</h4>
+                                        <p class="text-[11px] text-slate-400 font-mono">S/N: ${a.serial || 'DOM-' + a.id}</p>
+                                    </div>
+                                    <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5 text-xs">
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-400 font-bold">Warranty Valid Till:</span>
+                                            <span class="font-black text-slate-700">${a.warranty}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-slate-400 font-bold">Next Service Due:</span>
+                                            <span class="font-black ${sDays < 0 ? 'text-rose-600' : 'text-indigo-600'}">${a.service} (${sDays < 0 ? 'Overdue' : sDays + 'd'})</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100">
+                                        <b>Maintenance Note:</b> ${a.note}
+                                    </p>
+                                </div>
+                                <div class="flex gap-2 pt-2">
+                                    <button onclick="app.completeService(${a.id})" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs transition-colors">
+                                        Log Service Done (+6m)
+                                    </button>
+                                    <button onclick="app.deleteAsset(${a.id})" class="p-2.5 text-slate-300 hover:text-rose-600 rounded-xl border border-slate-100">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    addAsset() {
+        const name = document.getElementById('asset-name').value.trim();
+        const warranty = document.getElementById('asset-warranty').value;
+        const service = document.getElementById('asset-service').value;
+        if (!name) return;
+        db.assets.unshift({
+            id: Date.now(),
+            name,
+            serial: 'DOM-' + Math.floor(1000 + Math.random() * 9000),
+            warranty: warranty || offsetDate(365),
+            service: service || offsetDate(90),
+            note: 'Routine filter & performance inspection'
+        });
+        this.toast(`Registered ${name} in Warranty Vault`);
+        engine.save(`Added appliance ${name}`);
+    },
+
+    completeService(id) {
+        const asset = db.assets.find(a => a.id === id);
+        if (!asset) return;
+        asset.service = offsetDate(180);
+        db.completedTasks.unshift({
+            id: Date.now(),
+            title: `Completed Maintenance: ${asset.name}`,
+            date: offsetDate(0),
+            by: db.config.activeProfile
+        });
+        this.toast(`Logged service for ${asset.name}! Next service scheduled in 6 months.`);
+        engine.save(`Logged service for ${asset.name}`);
+    },
+
+    deleteAsset(id) {
+        db.assets = db.assets.filter(a => a.id !== id);
+        engine.save('Deleted appliance');
+    },
+
+    // --- VIEW 5: RECURRING BILLS & UTILITIES ---
+    viewBills(el) {
+        el.innerHTML = `
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Recurring Utilities & Household Bills</h2>
+                    <p class="text-xs text-slate-400">Track monthly utility obligations and shared member assignments</p>
+                </div>
+
+                <!-- Add Bill Bar -->
+                <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-3">
+                    <input id="bill-name" type="text" placeholder="Bill Name (e.g. Piped Gas Bill)" class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none">
+                    <input id="bill-amount" type="number" placeholder="Amount (₹)" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none">
+                    <input id="bill-due" type="date" value="${offsetDate(10)}" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none">
+                    <button onclick="app.addBill()" class="bg-slate-900 hover:bg-indigo-600 text-white rounded-xl font-black text-xs py-2.5 transition-colors">+ Add Bill</button>
+                </div>
+
+                <div class="bg-white rounded-[32px] border border-slate-200/80 overflow-hidden shadow-sm divide-y divide-slate-100">
+                    ${db.bills.map(b => {
+                        const d = this.daysDiff(b.due);
+                        return `
+                            <div class="p-6 flex items-center justify-between hover:bg-slate-50/60 transition-colors">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-11 h-11 rounded-2xl ${b.status==='Paid'?'bg-emerald-50 text-emerald-600':'bg-rose-50 text-rose-600'} flex items-center justify-center">
+                                        <i data-lucide="receipt" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-black text-slate-900 text-sm">${b.name}</p>
+                                        <p class="text-xs text-slate-400">Due: ${b.due} (${b.status==='Paid'?'Settled':(d<0?Math.abs(d)+'d overdue':d+'d left')}) • Assigned: <b>${b.assigned || 'Kiran'}</b></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-5">
+                                    <div class="text-right">
+                                        <p class="text-base font-black text-slate-900">₹${b.amount}</p>
+                                        <span class="text-[10px] font-black px-2 py-0.5 rounded uppercase ${b.status==='Paid'?'bg-emerald-100 text-emerald-700':'bg-rose-100 text-rose-700'}">${b.status}</span>
+                                    </div>
+                                    ${b.status === 'Unpaid' ? `
+                                        <button onclick="app.payBill(${b.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold">Mark Paid</button>
+                                    ` : `
+                                        <button onclick="app.deleteBill(${b.id})" class="text-slate-300 hover:text-rose-600 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    `}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    },
+
+    addBill() {
+        const name = document.getElementById('bill-name').value.trim();
+        const amount = parseFloat(document.getElementById('bill-amount').value) || 500;
+        const due = document.getElementById('bill-due').value || offsetDate(7);
+        if (!name) return;
+        db.bills.unshift({ id: Date.now(), name, amount, due, assigned: db.config.activeProfile, status: 'Unpaid' });
+        this.toast(`Added ${name} (₹${amount})`);
+        engine.save(`Added bill ${name}`);
+    },
+
+    payBill(id) {
+        const bill = db.bills.find(b => b.id === id);
+        if (!bill) return;
+        bill.status = 'Paid';
+        db.completedTasks.unshift({
+            id: Date.now(),
+            title: `Paid ${bill.name} (₹${bill.amount})`,
+            date: offsetDate(0),
+            by: db.config.activeProfile
+        });
+        this.toast(`Marked ${bill.name} as Paid!`);
+        engine.save(`Paid bill ${bill.name}`);
+    },
+
+    deleteBill(id) {
+        db.bills = db.bills.filter(b => b.id !== id);
+        engine.save('Deleted bill record');
+    },
+
+    // --- VIEW 6: BUDGET ANALYTICS & WASTE REDUCTION REPORT ---
+    viewAnalytics(el) {
+        const invValue = db.inventory.reduce((a, b) => a + (Number(b.price) || 0), 0);
+        const billTotal = db.bills.reduce((a, b) => a + (Number(b.amount) || 0), 0);
+        const savedWaste = db.completedTasks.length * 85;
+
+        el.innerHTML = `
+            <div class="space-y-8">
+                <div>
+                    <h2 class="text-2xl font-black text-slate-900">Household Budget & Waste Reduction Analytics</h2>
+                    <p class="text-xs text-slate-400">Financial overview of stock value, utility outflow, and prevented food expiry</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-7 rounded-[28px] border border-slate-200/80 shadow-sm">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Inventory Value</p>
+                        <h3 class="text-4xl font-black text-indigo-600 mt-2">₹${invValue}</h3>
+                        <p class="text-xs text-slate-500 mt-2">Across ${db.inventory.length} tracked household products</p>
+                    </div>
+                    <div class="bg-white p-7 rounded-[28px] border border-slate-200/80 shadow-sm">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Monthly Utility Outflow</p>
+                        <h3 class="text-4xl font-black text-rose-600 mt-2">₹${billTotal}</h3>
+                        <p class="text-xs text-slate-500 mt-2">${db.bills.filter(b=>b.status==='Paid').length} of ${db.bills.length} bills settled this cycle</p>
+                    </div>
+                    <div class="bg-white p-7 rounded-[28px] border border-slate-200/80 shadow-sm">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estimated Waste Prevented</p>
+                        <h3 class="text-4xl font-black text-emerald-600 mt-2">₹${savedWaste}</h3>
+                        <p class="text-xs text-slate-500 mt-2">Through proactive expiry alerts & timely consumption</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // --- VIEW 7: SYSTEM ARCHITECTURE & LIVE REST API CONSOLE ---
+    viewBackend(el) {
+        el.innerHTML = `
+            <div class="space-y-8">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900">5-Layer System Architecture & Virtual REST Console</h2>
+                        <p class="text-xs text-slate-400">PBL Evaluation 2 Reference Architecture & Real-Time State Persistence Log</p>
+                    </div>
+                    <button onclick="app.exportDB()" class="px-4 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl flex items-center gap-2">
+                        <i data-lucide="download" class="w-4 h-4"></i> Export database.json
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- 5-Layer Architecture Stack -->
+                    <div class="bg-white p-7 rounded-[32px] border border-slate-200/80 shadow-sm space-y-4">
+                        <h4 class="text-xs font-black text-indigo-600 uppercase tracking-widest">5-Layer Modular Architecture</h4>
+                        <div class="space-y-2.5">
+                            <div class="p-4 bg-indigo-600 text-white rounded-2xl text-xs font-bold flex justify-between">
+                                <span>1. User Layer</span><span>Dashboard, Scanner, Handwriting & Mobile UI</span>
+                            </div>
+                            <div class="p-4 bg-indigo-500 text-white rounded-2xl text-xs font-bold flex justify-between">
+                                <span>2. Application Layer</span><span>Inventory, Shopping, Maintenance, Warranty, Bills</span>
+                            </div>
+                            <div class="p-4 bg-indigo-400 text-white rounded-2xl text-xs font-bold flex justify-between">
+                                <span>3. Service Layer</span><span>Gemini Vision OCR, Expiry Parser & Reminder Engine</span>
+                            </div>
+                            <div class="p-4 bg-slate-800 text-white rounded-2xl text-xs font-bold flex justify-between">
+                                <span>4. Data Layer</span><span>Virtual REST Controller & JSON Persistence</span>
+                            </div>
+                            <div class="p-4 bg-emerald-600 text-white rounded-2xl text-xs font-bold flex justify-between">
+                                <span>5. Output Layer</span><span>Prioritized Alerts, Rescue Recipes & Analytics</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live REST Console -->
+                    <div class="bg-slate-900 rounded-[32px] p-7 flex flex-col h-[360px] shadow-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">Live Virtual REST API Transaction Log</span>
+                            <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">200 OK ACTIVE</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-2.5 custom-scrollbar pr-2">
+                            ${API_LOG.map(log => `
+                                <div class="api-log-entry p-3 bg-white/5 border-l-2 border-emerald-400 rounded-r-xl">
+                                    <div class="flex justify-between text-slate-400 mb-0.5">
+                                        <span>[${log.timestamp}]</span>
+                                        <span class="text-emerald-300 font-bold">${log.method}${log.endpoint}</span>
+                                    </div>
+                                    <div class="text-white">${log.msg}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    exportDB() {
+        const data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
+        const anchor = document.createElement('a');
+        anchor.setAttribute("href", data);
+        anchor.setAttribute("download", "domestix_database.json");
+        anchor.click();
+    },
+
+    // --- MODALS & AI COACH ---
+    openIngestHub(defaultTab = 'upload') {
+        document.getElementById('modal-ingest-hub').classList.remove('hidden');
+        document.getElementById('manual-exp').value = offsetDate(7);
+        hub.cancelConfirmation();
+        hub.setTab(defaultTab);
+        hub.initCanvas();
+    },
+
+    openModal(id) {
+        document.getElementById('modal-' + id).classList.remove('hidden');
+        if (id === 'settings') {
+            document.getElementById('settings-gemini-key').value = db.config.geminiKey || '';
+        }
+        if (id === 'ai-coach') {
+            this.renderAICoachWelcome();
+        }
+        lucide.createIcons();
+    },
+
+    closeModal(id) {
+        document.getElementById('modal-' + id).classList.add('hidden');
+        if (id === 'ingest-hub') hub.stopCamera();
+    },
+
+    saveSettings() {
+        const key = document.getElementById('settings-gemini-key').value.trim();
+        db.config.geminiKey = key;
+        engine.save('Updated API & Platform settings');
+        this.closeModal('settings');
+        this.toast(key ? 'Live Gemini Vision API Key activated!' : 'Saved settings (Smart Local Engine active)');
+    },
+
+    renderAICoachWelcome() {
+        const box = document.getElementById('ai-chat-history');
+        if (box.innerHTML.trim() !== '') return;
+        const expSoon = db.inventory.filter(i => this.daysDiff(i.exp) <= 4);
+        box.innerHTML = `
+            <div class="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 text-xs text-slate-700 space-y-2 leading-relaxed">
+                <p class="font-black text-indigo-900">Hello ${db.config.activeProfile}! Here is your instant household briefing:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><b>Expiry Alert:</b> You have <b>${expSoon.length} item(s)</b> expiring within 4 days (${expSoon.map(e=>e.name).join(', ') || 'None'}).</li>
+                    <li><b>Recipe Rescue Idea:</b> Combine Milk, Oats, or Paneer into a quick high-protein meal tonight to avoid waste.</li>
+                    <li><b>Appliance Care:</b> Check your RO Purifier & Split AC filter schedules in the Appliances tab.</li>
+                </ul>
+            </div>
+        `;
+    },
+
+    async askAI(presetPrompt) {
+        const input = document.getElementById('ai-custom-prompt');
+        const question = presetPrompt || input.value.trim();
+        if (!question) return;
+        if (!presetPrompt) input.value = '';
+
+        const box = document.getElementById('ai-chat-history');
+        box.innerHTML += `
+            <div class="flex justify-end">
+                <div class="bg-slate-900 text-white px-4 py-2.5 rounded-2xl text-xs font-bold max-w-md">${question}</div>
+            </div>
+        `;
+
+        // Generate context-aware response
+        const expItems = db.inventory.filter(i => this.daysDiff(i.exp) <= 4).map(i => `${i.name} (exp: ${i.exp})`).join(', ') || 'No urgent items';
+        let reply = `Based on your current inventory (${db.inventory.map(i=>i.name).join(', ')}):
+        <br><br>• <b>Priority Action:</b> Use <b>${expItems}</b> first.
+        <br>• <b>Quick Vegetarian Meal Idea:</b> Make <i>Spiced Masala Oats</i> or <i>Paneer & Vegetable Toast</i> using your existing stock.
+        <br>• <b>Storage Reminder:</b> Keep dairy items at 4°C on the middle fridge shelf and dry staples in airtight jars.`;
+
+        if (db.config.geminiKey) {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${db.config.geminiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `You are Domestix AI Household Advisor. Current inventory: ${JSON.stringify(db.inventory)}. Bills: ${JSON.stringify(db.bills)}. User asks: "${question}". Give a concise, practical 3-bullet answer.` }] }]
+                    })
+                });
+                const data = await res.json();
+                const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (aiText) reply = aiText.replace(/\n/g, '<br>');
+            } catch (e) {}
+        }
+
+        box.innerHTML += `
+            <div class="p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl text-xs text-slate-800 leading-relaxed">
+                <p class="font-black text-emerald-800 mb-1">Domestix AI Advisor</p>
+                <div>${reply}</div>
+            </div>
+        `;
+        box.scrollTop = box.scrollHeight;
+    }
+};
+
+// --- SMART INGESTION HUB & PRECISION EXPIRY DATE EXTRACTOR ---
+const hub = {
+    currentTab: 'upload',
+    uploadedBase64: null,
+    uploadedFileName: '',
+
+    setTab(t) {
+        this.currentTab = t;
+        document.querySelectorAll('.hub-tab').forEach(b => {
+            b.className = "hub-tab w-full text-left p-3.5 rounded-2xl text-xs font-bold flex items-center gap-3 transition-all " +
+                (b.dataset.tab === t ? "bg-indigo-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-100");
+        });
+        document.querySelectorAll('.hub-pane').forEach(p => p.classList.toggle('hidden', p.id !== 'pane-' + t));
+        if (t === 'camera') this.initCamera(); else this.stopCamera();
+        lucide.createIcons();
+    },
+
+    setManualDateOffset(days) {
+        document.getElementById('manual-exp').value = offsetDate(days);
+    },
+
+    parseNaturalLanguage() {
+        const raw = document.getElementById('nl-quick-input').value.trim();
+        if (!raw) return;
+
+        // Parse days ("in 3 days", "5 days")
+        let days = 7;
+        const dayMatch = raw.match(/(\d+)\s*day/i);
+        if (dayMatch) days = parseInt(dayMatch[1]);
+
+        // Parse price ("₹130", "rs 130", "for 130")
+        let price = 60;
+        const priceMatch = raw.match(/(?:₹|rs\.?|for)\s*(\d+)/i);
+        if (priceMatch) price = parseInt(priceMatch[1]);
+
+        // Clean item name
+        const cleanName = raw
+            .replace(/expiring.*$/i, '')
+            .replace(/(?:₹|rs\.?|for)\s*\d+/i, '')
+            .trim() || raw;
+
+        document.getElementById('manual-name').value = cleanName;
+        document.getElementById('manual-price').value = price;
+        document.getElementById('manual-exp').value = offsetDate(days);
+        app.toast('Auto-filled fields from your sentence!');
+    },
+
+    submitManualForm() {
+        const name = document.getElementById('manual-name').value.trim();
+        const cat = document.getElementById('manual-cat').value;
+        const qty = parseFloat(document.getElementById('manual-qty').value) || 1;
+        const unit = document.getElementById('manual-unit').value;
+        const price = parseFloat(document.getElementById('manual-price').value) || 50;
+        const exp = document.getElementById('manual-exp').value || offsetDate(7);
+
+        if (!name) {
+            alert('Please enter a product name');
+            return;
+        }
+
+        db.inventory.unshift({
+            id: Date.now(),
+            name,
+            cat,
+            qty,
+            unit,
+            price,
+            exp,
+            tip: getStorageTip(name, cat)
+        });
+
+        document.getElementById('manual-name').value = '';
+        app.closeModal('ingest-hub');
+        app.navigate('inventory');
+        app.toast(`Added ${name} (Exp: ${exp}) to Inventory!`);
+        engine.save(`Manually added ${name}`);
+    },
+
+    previewFile(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        this.uploadedFileName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+
+        // Auto-populate name hint if filename looks descriptive
+        const hintName = document.getElementById('upload-hint-name');
+        if (hintName && !hintName.value && !/^(img|dsc|photo|whatsapp|screenshot|image)/i.test(this.uploadedFileName)) {
+            hintName.value = this.uploadedFileName;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            this.uploadedBase64 = ev.target.result;
+            document.getElementById('upload-img-tag').src = ev.target.result;
+            document.getElementById('upload-preview-container').classList.remove('hidden');
+            document.getElementById('upload-idle').classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    },
+
+    resetUpload() {
+        this.uploadedBase64 = null;
+        this.uploadedFileName = '';
+        document.getElementById('upload-preview-container').classList.add('hidden');
+        document.getElementById('upload-idle').classList.remove('hidden');
+        document.getElementById('file-input').value = '';
+        document.getElementById('upload-hint-name').value = '';
+        document.getElementById('upload-hint-exp').value = '';
+    },
+
+    // --- SMART INDIAN DATE PARSER (CATCHES DD/MM/YYYY, DD-MM-YYYY, EXP STAMPS) ---
+    extractDateFromText(str, fallbackDays = 7) {
+        if (!str) return offsetDate(fallbackDays);
+        // Match DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
+        const dmy = str.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+        if (dmy) {
+            let day = dmy[1].padStart(2, '0');
+            let month = dmy[2].padStart(2, '0');
+            let year = dmy[3].length === 2 ? '20' + dmy[3] : dmy[3];
+            return `${year}-${month}-${day}`;
+        }
+        // Match YYYY-MM-DD
+        const iso = str.match(/(\d{4})-(\d{2})-(\d{2})/);
+        if (iso) return iso[0];
+        return offsetDate(fallbackDays);
+    },
+
+    async processOCR(mode) {
+        const overlay = document.getElementById('ocr-overlay');
+        overlay.classList.remove('hidden');
+
+        // Gather user hints/overrides from active tab
+        const nameHint = (mode === 'upload' ? document.getElementById('upload-hint-name')?.value :
+                         mode === 'camera' ? document.getElementById('camera-hint-name')?.value :
+                         document.getElementById('draw-hint-name')?.value)?.trim() || '';
+
+        const expOverride = (mode === 'upload' ? document.getElementById('upload-hint-exp')?.value :
+                            mode === 'camera' ? document.getElementById('camera-hint-exp')?.value :
+                            document.getElementById('draw-hint-exp')?.value) || '';
+
+        const todayISO = offsetDate(0);
+
+        // 1. IF GEMINI API KEY IS SET & IMAGE EXISTS -> REAL VISION OCR
+        let imagePayload = this.uploadedBase64;
+        if (mode === 'draw') {
+            const canvas = document.getElementById('handwriting-canvas');
+            imagePayload = canvas.toDataURL('image/png');
+        }
+
+        if (db.config.geminiKey && imagePayload) {
+            try {
+                const base64Data = imagePayload.split(',')[1];
+                const mimeType = imagePayload.substring(imagePayload.indexOf(':') + 1, imagePayload.indexOf(';'));
+
+                const prompt = `Analyze this image (product expiry label, receipt, or handwritten note). Today is ${todayISO}.
+${nameHint ? `User hint: "${nameHint}".` : ''}
+${expOverride ? `User expiry override: "${expOverride}".` : ''}
+RULES:
+1. Find printed 'EXP', 'Expiry Date', 'Use By', 'Best Before', 'BB', 'PKD', or 'MFG'.
+2. Convert Indian dates (DD/MM/YYYY, DD.MM.YY, DD-MM-YYYY, MMM YYYY) strictly to 'YYYY-MM-DD'.
+3. Do NOT confuse MRP, weight, or barcode numbers with the expiry date.
+4. If only MFG/PKD + 'Best before X months/days' is visible, calculate exact YYYY-MM-DD expiry date.
+Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Bakery|Groceries|Snacks|Medicine|Cleaning", "qty": 1, "unit": "pcs", "price": 60, "exp": "YYYY-MM-DD", "source": "Gemini Vision OCR"}`;
+
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${db.config.geminiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType, data: base64Data } }] }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+                const json = await res.json();
+                const rawText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (rawText) {
+                    const parsed = JSON.parse(rawText.replace(/```json|```/g, '').trim());
+                    const itemObj = Array.isArray(parsed) ? parsed[0] : parsed;
+                    if (expOverride) itemObj.exp = expOverride;
+                    overlay.classList.add('hidden');
+                    this.showConfirmation(itemObj);
+                    return;
+                }
+            } catch (err) {
+                console.warn('Fallback to local parser:', err);
+            }
+        }
+
+        // 2. SMART CONTEXT-AWARE PARSER (WHEN NO API KEY IS PROVIDED)
+        setTimeout(() => {
+            const combinedText = `${nameHint} ${this.uploadedFileName}`.trim();
+            const detectedExp = expOverride || this.extractDateFromText(combinedText, 6);
+            const cleanTitle = (nameHint || this.uploadedFileName || 'Scanned Household Item')
+                .replace(/exp(?:iry)?[:\s]*\d+[\/\-\.]\d+[\/\-\.]\d+/ig, '')
+                .trim() || 'Scanned Grocery Item';
+
+            // Smart Category Detection
+            let cat = 'Groceries';
+            if (/milk|curd|yogurt|butter|cheese|amul/i.test(cleanTitle)) cat = 'Dairy';
+            else if (/paneer|veg|tomato|fruit|spinach/i.test(cleanTitle)) cat = 'Perishables';
+            else if (/bread|bun|cake|biscuit/i.test(cleanTitle)) cat = 'Bakery';
+            else if (/tablet|med|paracetamol|syrup/i.test(cleanTitle)) cat = 'Medicine';
+            else if (/soap|surf|detergent|clean/i.test(cleanTitle)) cat = 'Cleaning';
+
+            overlay.classList.add('hidden');
+            this.showConfirmation({
+                name: cleanTitle,
+                cat,
+                qty: 1,
+                unit: 'pcs',
+                price: 65,
+                exp: detectedExp,
+                source: expOverride ? 'Exact Manual Expiry Set' : 'Smart Label Parser (Verify Date Below)'
+            });
+        }, 900);
+    },
+
+    showConfirmation(data) {
+        document.getElementById('hub-content').classList.add('hidden');
+        document.getElementById('hub-confirmation').classList.remove('hidden');
+        document.getElementById('edit-name').value = data.name || 'Household Item';
+        document.getElementById('edit-cat').value = data.cat || 'Groceries';
+        document.getElementById('edit-qty').value = data.qty || 1;
+        document.getElementById('edit-unit').value = data.unit || 'pcs';
+        document.getElementById('edit-exp').value = data.exp || offsetDate(7);
+        document.getElementById('edit-price').value = data.price || 60;
+        document.getElementById('ocr-source-badge').innerText = `Source: ${data.source || 'Precision Extractor'} — You can edit the expiry date below before saving`;
+        lucide.createIcons();
+    },
+
+    adjustConfirmDate(days) {
+        document.getElementById('edit-exp').value = offsetDate(days);
+    },
+
+    cancelConfirmation() {
+        document.getElementById('hub-content').classList.remove('hidden');
+        document.getElementById('hub-confirmation').classList.add('hidden');
+    },
+
+    commitItem() {
+        const name = document.getElementById('edit-name').value.trim() || 'Scanned Item';
+        const cat = document.getElementById('edit-cat').value;
+        const exp = document.getElementById('edit-exp').value || offsetDate(7);
+        const item = {
+            id: Date.now(),
+            name,
+            cat,
+            qty: parseFloat(document.getElementById('edit-qty').value) || 1,
+            unit: document.getElementById('edit-unit').value || 'pcs',
+            exp,
+            price: parseFloat(document.getElementById('edit-price').value) || 50,
+            tip: getStorageTip(name, cat)
+        };
+        db.inventory.unshift(item);
+        engine.save(`Committed scanned item ${name} (Exp: ${exp})`);
+        app.closeModal('ingest-hub');
+        app.navigate('inventory');
+        app.toast(`Saved "${name}" with expiry ${exp}!`);
+        this.cancelConfirmation();
+    },
+
+    // Camera Handlers
+    async initCamera() {
+        try {
+            this.stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            document.getElementById('camera-stream').srcObject = this.stream;
+        } catch (e) {
+            app.toast("Camera permission not granted — use Upload or Type tab");
+        }
+    },
+
+    stopCamera() {
+        if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+    },
+
+    capturePhoto() {
+        const video = document.getElementById('camera-stream');
+        if (video && video.videoWidth) {
+            const c = document.createElement('canvas');
+            c.width = video.videoWidth;
+            c.height = video.videoHeight;
+            c.getContext('2d').drawImage(video, 0, 0);
+            this.uploadedBase64 = c.toDataURL('image/jpeg');
+        }
+        this.processOCR('camera');
+    },
+
+    // Handwriting Pad Engine
+    initCanvas() {
+        const canvas = document.getElementById('handwriting-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+
+        const getPos = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * (canvas.width / rect.width),
+                y: (clientY - rect.top) * (canvas.height / rect.height)
+            };
+        };
+
+        canvas.onmousedown = (e) => { painting = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); };
+        canvas.onmouseup = () => { painting = false; ctx.closePath(); };
+        canvas.onmousemove = (e) => {
+            if (!painting) return;
+            const p = getPos(e);
+            ctx.lineWidth = 3.5;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#4f46e5';
+            ctx.lineTo(p.x, p.y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+        };
+    },
+
+    clearCanvas() {
+        const c = document.getElementById('handwriting-canvas');
+        c.getContext('2d').clearRect(0, 0, c.width, c.height);
+    },
+
+    quickSKU(code) {
+        document.getElementById('sku-input').value = code;
+        this.lookupSKU();
+    },
+
+    lookupSKU() {
+        const sku = document.getElementById('sku-input').value.trim();
+        const skuCatalog = {
+            '8901262010016': { name: 'Amul Taaza Toned Milk 1L', cat: 'Dairy', qty: 1, unit: 'L', price: 68, exp: offsetDate(4) },
+            '8901063012028': { name: 'Britannia Whole Wheat Bread', cat: 'Bakery', qty: 1, unit: 'pk', price: 55, exp: offsetDate(5) },
+            '8901262150118': { name: 'Amul Fresh Malai Paneer 200g', cat: 'Perishables', qty: 200, unit: 'g', price: 95, exp: offsetDate(6) },
+            '8901058851250': { name: 'Maggi Masala Oats Pack', cat: 'Groceries', qty: 1, unit: 'pk', price: 145, exp: offsetDate(180) }
+        };
+        const match = skuCatalog[sku] || { name: `SKU Item #${sku || '101'}`, cat: 'Groceries', qty: 1, unit: 'pcs', price: 99, exp: offsetDate(30) };
+        this.showConfirmation({ ...match, source: `Barcode Database Lookup (${sku})` });
+    }
+};
+
+// INITIALIZE APPLICATION
+engine.init();
+</script>
+</body>
+</html>

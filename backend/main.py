@@ -842,61 +842,192 @@ def parse_ocr(req: OCRRequest):
     }
 
 # ============================================================================
-# 9. AI HOUSEHOLD COACH & RECIPE OPTIMIZER (IEEE 2026 Reference)
+# ============================================================================
+# 9. AI HOUSEHOLD COACH & RECIPE OPTIMIZER (Lively Conversational Engine)
 # ============================================================================
 
 @app.post("/api/ai/coach")
 def ai_coach(req: AICoachRequest):
+    """
+    Lively, intelligent, conversational household AI Coach:
+    - Handles greetings ('hi', 'hello', 'hey', 'good morning', etc.) warmly and naturally
+    - Conversational banter, small talk, jokes, kitchen hacks
+    - Context-aware recipe suggestions using actual DB inventory items
+    - Proactive expiry rescue, budget tips, appliance care, and utility bill tracking
+    """
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM inventory ORDER BY expiry_date ASC")
     inv = [dict(r) for r in cursor.fetchall()]
+    cursor.execute("SELECT * FROM bills WHERE status = 'Unpaid' ORDER BY due_date ASC")
+    unpaid_bills = [dict(r) for r in cursor.fetchall()]
+    cursor.execute("SELECT * FROM appliances ORDER BY next_service_date ASC")
+    appliances = [dict(r) for r in cursor.fetchall()]
     conn.close()
 
-    expiring_soon = [i for i in inv if days_until(i["expiry_date"]) <= 4]
+    expiring_soon = [i for i in inv if days_until(i["expiry_date"]) <= 4 and days_until(i["expiry_date"]) >= 0]
+    expired_items = [i for i in inv if days_until(i["expiry_date"]) < 0]
     exp_names = [i["name"] for i in expiring_soon]
+    total_val = sum(i.get("price", 0) for i in inv)
+    saved_pot = sum(i.get("price", 50) for i in expiring_soon)
 
     user_query = (req.prompt or "").strip().lower()
+    clean_q = re.sub(r'[^\w\s]', '', user_query).strip()
 
-    if "recipe" in user_query or "cook" in user_query or "meal" in user_query:
+    # 1. GREETINGS & CASUAL OPENERS (e.g. 'hi', 'hello', 'hey', 'good morning', etc.)
+    greetings = ["hi", "hello", "hey", "heyy", "hii", "hi there", "hello there", "hola", "namaste", "good morning", "good afternoon", "good evening", "howdy", "sup", "yo"]
+    if clean_q in greetings or any(clean_q.startswith(g + " ") for g in ["hi", "hello", "hey", "good morning", "good evening"]):
+        exp_text = f"You have <b>{len(expiring_soon)} item(s)</b> ({', '.join(exp_names)}) to use soon." if expiring_soon else "All your perishables are fresh and safe!"
+        advice = (
+            f"Hey there! 👋 Wonderful to chat with you!<br><br>"
+            f"I'm your <b>Domestix AI Coach</b> — your domestic co-pilot for zero food waste, tasty home recipes, and stress-free utility tracking.<br><br>"
+            f"<b>Quick Home Update:</b><br>"
+            f"• 📦 <b>Inventory:</b> Tracking <b>{len(inv)} items</b> in your pantry.<br>"
+            f"• ⏰ <b>Expiry Watch:</b> {exp_text}<br>"
+            f"• ⚡ <b>Bills:</b> {len(unpaid_bills)} pending utility payment(s).<br><br>"
+            f"What would you like to do? You can ask me:<br>"
+            f"• <i>\"What can I cook for dinner?\"</i><br>"
+            f"• <i>\"What's expiring next?\"</i><br>"
+            f"• <i>\"Give me a smart kitchen hack\"</i><br>"
+            f"• <i>\"How do I save money on groceries?\"</i>"
+        )
+        return {"success": True, "response": advice, "intent": "greeting", "expiring_items": exp_names}
+
+    # 2. STATUS & HOW ARE YOU
+    if any(k in user_query for k in ["how are you", "how r u", "how you doing", "what's up", "whats up"]):
+        advice = (
+            "I'm feeling great and running at 100%! 😊 Always excited to help you keep your home in top shape.<br><br>"
+            f"Your household is currently managing <b>{len(inv)} pantry items</b> and <b>{len(appliances)} appliances</b>.<br>"
+            "How can I help you right now? Hungry, checking groceries, or looking for appliance advice?"
+        )
+        return {"success": True, "response": advice, "intent": "smalltalk", "expiring_items": exp_names}
+
+    # 3. IDENTITY & CAPABILITIES
+    if any(k in user_query for k in ["who are you", "what can you do", "introduce", "what is domestix", "help me"]):
+        advice = (
+            "🌟 <b>Meet Your Domestix Lively AI Coach:</b><br><br>"
+            "I'm your intelligent domestic assistant built by <b>Team Saee, Ayusha, Pranav & Vaishnavi</b> for PBL 2026. Here is what I do best:<br>"
+            "• 🥘 <b>Zero-Waste Chef:</b> Suggest delicious recipes prioritizing ingredients that expire first.<br>"
+            "• 🏷️ <b>Smart Expiry Guardian:</b> OCR scans product dates and reminds you before items spoil.<br>"
+            "• ❄️ <b>Food Preservation Science:</b> Storage tips to extend produce & dairy shelf life by 2x.<br>"
+            "• 🛠️ <b>Appliance & Utility Care:</b> Keep ACs, RO purifiers, and monthly bills on track.<br><br>"
+            "Try chatting with me casually anytime!"
+        )
+        return {"success": True, "response": advice, "intent": "identity", "expiring_items": exp_names}
+
+    # 4. HUNGER & RECIPES
+    if any(k in user_query for k in ["recipe", "cook", "meal", "hungry", "eat", "dinner", "lunch", "breakfast", "snack"]):
         if exp_names:
             items_str = ", ".join(exp_names[:3])
             advice = (
-                f"🥘 <b>Zero-Waste Chef Suggestion:</b> You have <b>{items_str}</b> expiring soon!<br><br>"
-                f"• <b>Quick Dinner Idea:</b> Cook a high-protein <i>Paneer & Spiced Vegetable Scramble</i> or <i>Creamy Oats Bowl</i> tonight.<br>"
-                f"• <b>Impact:</b> Prevents ₹{sum(i.get('price', 50) for i in expiring_soon):.0f} worth of avoidable grocery waste!"
+                f"🥘 <b>Lively Chef Recommendation — Rescue Tonight!</b><br><br>"
+                f"You have <b>{items_str}</b> expiring soon. Let's make sure none of that goes to waste!<br><br>"
+                f"• <b>Quick Dish:</b> <i>Golden Paneer & Herb Stir-Fry with Toasted Bread</i> or <i>Warm Spiced Porridge</i>.<br>"
+                f"• <b>Prep Time:</b> ~10 minutes.<br>"
+                f"• <b>Financial Win:</b> Preparing this saves ~<b>₹{saved_pot}</b> of groceries from being discarded.<br>"
+                f"• <b>Chef Tip:</b> Squeeze a drop of fresh lemon juice at the end to brighten the flavors!"
             )
         else:
+            pantry_names = [i["name"] for i in inv[:3]]
             advice = (
-                "🍲 <b>Healthy Household Recipe:</b> All your perishable stock is in great shape!<br><br>"
-                "• <b>Balanced Meal Idea:</b> <i>Masala Oats Porridge with Sauteed Veggies</i>.<br>"
-                "• Prep time: 10 mins. High in fiber and zero waste."
+                f"🍲 <b>Fresh Kitchen Ideas:</b> All your perishables are well within their safe dates! 🎉<br><br>"
+                f"Based on your stock ({', '.join(pantry_names)}):<br>"
+                f"• <b>Healthy Choice:</b> <i>High-Protein Masala Oats Bowl with Milk</i> or <i>Crispy Whole Wheat Sandwiches</i>.<br>"
+                f"• <b>Quick & Light:</b> Ready in under 12 minutes, zero food waste!"
             )
-    elif "storage" in user_query or "shelf" in user_query:
-        advice = (
-            "❄️ <b>Shelf-Life Preservation Secrets:</b><br><br>"
-            "1. <b>Dairy & Milk:</b> Always place on the middle refrigerator shelf (3°C - 4°C). Avoid keeping in the door shelves where temperature fluctuates.<br>"
-            "2. <b>Fresh Paneer:</b> Store submerged in cold drinking water inside an airtight container; replace the water every 48 hours.<br>"
-            "3. <b>Bakery & Breads:</b> In humid weather, freeze excess slices in a ziplock bag and toast directly from frozen."
-        )
-    elif "bill" in user_query or "maintenance" in user_query or "appliance" in user_query:
-        advice = (
-            "⚡ <b>Household Asset & Utility Advice:</b><br><br>"
-            "• Clean Split AC mesh filters every 30 days to lower electricity consumption by up to 15%.<br>"
-            "• Inspect RO pre-filter sediment cartridges every 3 to 6 months to protect the RO membrane.<br>"
-            "• Enable auto-pay or calendar reminders 3 days ahead of utility due dates to avoid penalty fees."
-        )
-    else:
-        advice = (
-            f"🤖 <b>Domestix Household Intelligence:</b><br><br>"
-            f"Currently tracking <b>{len(inv)} items</b> in stock. "
-            f"<b>{len(expiring_soon)} item(s)</b> require attention within the next 4 days ({', '.join(exp_names) if exp_names else 'All items safe'}).<br>"
-            f"Ask me for <i>recipes</i>, <i>storage preservation</i>, or <i>appliance maintenance tips</i> anytime!"
-        )
+        return {"success": True, "response": advice, "intent": "recipe", "expiring_items": exp_names}
 
+    # 5. EXPIRY CHECK & SPOILAGE
+    if any(k in user_query for k in ["expir", "spoil", "waste", "shelf life", "rotten", "bad", "use by"]):
+        if expiring_soon:
+            lines = [f"• <b>{i['name']}</b> ({i['quantity']}{i['unit']}) — Due in <b>{days_until(i['expiry_date'])} days</b> ({i['expiry_date']})" for i in expiring_soon]
+            advice = (
+                f"⏰ <b>Urgent Expiry Watch ({len(expiring_soon)} item(s)):</b><br><br>"
+                + "<br>".join(lines) +
+                f"<br><br>💡 <b>Rescue Action:</b> Consume or freeze these first. Rescuing them saves ₹{saved_pot}!"
+            )
+        elif expired_items:
+            advice = (
+                f"⚠️ You have <b>{len(expired_items)} item(s)</b> past their expiry date ({', '.join(i['name'] for i in expired_items)}).<br>"
+                "Please inspect them carefully or discard & restock via the shopping list."
+            )
+        else:
+            advice = "🎉 <b>Clear Skies!</b> Zero items are expiring in the next 4 days. Your pantry is fresh and well-managed!"
+        return {"success": True, "response": advice, "intent": "expiry", "expiring_items": exp_names}
+
+    # 6. KITCHEN HACKS & PRESERVATION TIPS
+    if any(k in user_query for k in ["hack", "tip", "trick", "storage", "preserve", "keep fresh"]):
+        advice = (
+            "💡 <b>Domestix Pro Kitchen Hacks:</b><br><br>"
+            "1. <b>Never Refrigerate Bread:</b> The cold temperatures cause starch retrogradation, making bread go stale 6x faster! Store at room temp or freeze sliced portions.<br>"
+            "2. <b>The Paneer Water Bath:</b> Submerge fresh paneer in drinking water in a sealed box; change water every 2 days to keep it soft for over a week.<br>"
+            "3. <b>Keep Bananas Away from Onions:</b> Bananas emit ethylene gas, accelerating ripening and spoiling neighboring vegetables.<br>"
+            "4. <b>Milk Sweet Spot:</b> Keep milk on the middle or bottom fridge shelf, never on the door where warm air hits on every open."
+        )
+        return {"success": True, "response": advice, "intent": "hack", "expiring_items": exp_names}
+
+    # 7. SAVING MONEY & BUDGET
+    if any(k in user_query for k in ["money", "budget", "save", "cost", "cheap", "expensive", "spend"]):
+        bill_sum = sum(b.get("amount", 0) for b in unpaid_bills)
+        advice = (
+            "💰 <b>Domestix Smart Household Savings Blueprint:</b><br><br>"
+            f"1. <b>Eliminate Food Waste:</b> Average households lose ₹2,000–₹4,000/month in spoiled food. Rescuing your {len(expiring_soon)} expiring item(s) immediately saves ~₹{saved_pot}.<br>"
+            f"2. <b>Pay Utility Bills On Time:</b> You have ₹{bill_sum} in pending bills ({', '.join(b['name'] for b in unpaid_bills[:2])}). Settling them avoids late penalty charges.<br>"
+            "3. <b>AC Maintenance:</b> Keeping air filters dust-free saves up to 15% on monthly electricity bills!"
+        )
+        return {"success": True, "response": advice, "intent": "budget", "expiring_items": exp_names}
+
+    # 8. JOKES & BANTER
+    if any(k in user_query for k in ["joke", "funny", "laugh", "bored", "humor"]):
+        advice = (
+            "😄 <b>Here's one for your kitchen:</b><br><br>"
+            "<i>Why did the tomato blush?</i><br>"
+            "👉 <b>Because it saw the salad dressing!</b> 🥗😂<br><br>"
+            "Speaking of fresh salads, check your veggies in the Inventory tab to make sure they're dressed and eaten before expiring!"
+        )
+        return {"success": True, "response": advice, "intent": "joke", "expiring_items": exp_names}
+
+    # 9. APPLIANCES & UTILITIES
+    if any(k in user_query for k in ["appliance", "ac", "filter", "service", "clean", "water", "ro"]):
+        app_list = [f"• <b>{a['name']}</b> (Next service: {a['next_service_date']})" for a in appliances]
+        advice = (
+            "🛠️ <b>Appliance Health & Preventive Care:</b><br><br>"
+            + "<br>".join(app_list) +
+            "<br><br><b>Pro-tip:</b> Regular filter cleaning on ACs and timely RO cartridge replacements prevent expensive breakdown repairs!"
+        )
+        return {"success": True, "response": advice, "intent": "appliance", "expiring_items": exp_names}
+
+    # 10. BILLS
+    if any(k in user_query for k in ["bill", "electricity", "due", "pay", "msedcl", "water bill"]):
+        if unpaid_bills:
+            b_lines = [f"• <b>{b['name']}</b> — ₹{b['amount']} (Due: {b['due_date']})" for b in unpaid_bills]
+            advice = (
+                f"⚡ <b>Pending Household Bills ({len(unpaid_bills)}):</b><br><br>"
+                + "<br>".join(b_lines) +
+                "<br><br>You can mark these paid with one click in the Bills tab!"
+            )
+        else:
+            advice = "✅ All household utility bills are fully paid! No overdue accounts."
+        return {"success": True, "response": advice, "intent": "bills", "expiring_items": exp_names}
+
+    # 11. COURTESY / THANK YOU
+    if any(k in user_query for k in ["thank", "thanks", "great", "awesome", "cool", "nice", "good job", "perfect"]):
+        advice = "You're so welcome! 😊 Always a pleasure keeping your home running smoothly. Whenever you need recipe ideas, storage hacks, or expiry checks, I'm right here!"
+        return {"success": True, "response": advice, "intent": "courtesy", "expiring_items": exp_names}
+
+    # 12. GENERAL CONVERSATIONAL FALLBACK
+    advice = (
+        f"🤖 <b>Domestix Household Intelligence:</b><br><br>"
+        f"I hear you! Here is your live home briefing:<br>"
+        f"• <b>Inventory:</b> <b>{len(inv)} items</b> tracked in pantry (₹{total_val:.0f} total stock value).<br>"
+        f"• <b>Expiring Soon:</b> {len(expiring_soon)} item(s) need attention ({', '.join(exp_names) if exp_names else 'All safe'}).<br>"
+        f"• <b>Utilities:</b> {len(unpaid_bills)} pending bill(s).<br><br>"
+        f"Try asking: <i>\"Hi\"</i>, <i>\"What should I eat tonight?\"</i>, <i>\"What's expiring next?\"</i>, or <i>\"Give me a kitchen hack!\"</i>"
+    )
     return {
         "success": True,
         "response": advice,
+        "intent": "general",
         "expiring_items": exp_names
     }
 

@@ -5,6 +5,22 @@
 
 ---
 
+## 🌐 Live Website (Direct Access from Any PC or Phone)
+
+You can launch and use Domestix **directly in your browser without installing anything**:
+
+- 🚀 **Live Login Portal:** [https://pranav-0712.github.io/Domestix/login.html](https://pranav-0712.github.io/Domestix/login.html)
+- 📊 **Live Main Dashboard:** [https://pranav-0712.github.io/Domestix/](https://pranav-0712.github.io/Domestix/)
+
+> [!TIP]
+> **How to activate GitHub Pages (Takes 30 seconds):**
+> 1. Open this repository on GitHub: [`https://github.com/pranav-0712/Domestix`](https://github.com/pranav-0712/Domestix)
+> 2. Click **Settings** (top tab) $\rightarrow$ **Pages** (in left sidebar).
+> 3. Under **Build and deployment > Branch**, select `main` and `/ (root)`, then click **Save**.
+> 4. In ~1 minute, the live site is permanently hosted at the links above!
+
+---
+
 ## 👥 Project Team Members
 
 | Name | Roll No. | Assigned Role |
@@ -102,23 +118,32 @@
 
 ---
 
-## 🚀 How to Run the Application
+## 🚀 How to Run on Any PC (3 Easy Ways)
 
-### Option A: Full-Stack Mode (Python FastAPI + SQLite Backend)
+### Method 1: Instant Direct Web Access (Zero Installation)
+Simply click the live link from any PC, tablet, or mobile phone:
+- **Direct Login:** [https://pranav-0712.github.io/Domestix/login.html](https://pranav-0712.github.io/Domestix/login.html)
+- Click any team member's demo button (*Pranav, Saee, Ayusha, Vaishnavi*) to sign in with 1 click.
+- Everything runs seamlessly in the browser with full offline storage, Tesseract OCR, and the Lively AI Coach!
 
-1. Double-click [start_server.bat](file:///d:/Domestix/start_server.bat) or run in terminal:
-   ```powershell
-   py -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-   ```
-2. Open your web browser and navigate to:
-   - **Login Page:** [http://127.0.0.1:8000/login.html](http://127.0.0.1:8000/login.html)
-   - **Main Dashboard:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-   - **Interactive API Docs (Swagger UI):** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+---
 
-### Option B: Standalone PWA Mode (No Server Required)
+### Method 2: 1-Click Automatic Startup (Windows)
+If you download or clone the repository to another PC:
+```bash
+git clone https://github.com/pranav-0712/Domestix.git
+```
+1. Open the downloaded `Domestix` folder.
+2. Double-click **`run_domestix.bat`**.
+3. It automatically verifies Python, installs any missing packages, launches the FastAPI + SQLite server, and opens [http://127.0.0.1:8000/login.html](http://127.0.0.1:8000/login.html) in your browser.
 
-- Simply double-click [index.html](file:///d:/Domestix/index.html) or [login.html](file:///d:/Domestix/login.html) in any modern browser.
-- The built-in Virtual REST Engine activates automatically with complete `localStorage` persistence and full functionality!
+---
+
+### Method 3: Standalone Browser Launch (No Python Needed)
+If the other PC does not have Python installed:
+1. Open the downloaded `Domestix` folder.
+2. Double-click **`login.html`** or **`index.html`** in Chrome, Edge, Firefox, or Safari.
+3. The built-in Virtual REST Engine activates automatically with complete `localStorage` persistence and 100% full functionality!
 
 ---
 

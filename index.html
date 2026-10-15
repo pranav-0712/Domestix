@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domestix | Smart Household OS</title>
+    <title>Domestix | Smart Household Management Platform</title>
     
     <!-- Core Engine & Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -25,14 +25,14 @@
         }
 
         .scenic-banner {
-            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.25)), 
+            background-image: linear-gradient(to right, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.4)), 
                               url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
@@ -61,7 +61,7 @@
     <!-- SIDEBAR NAVIGATION -->
     <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-20 shrink-0">
         <div class="p-6 pb-4">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
                     <i data-lucide="layout-grid" class="text-white w-6 h-6"></i>
                 </div>
@@ -71,16 +71,27 @@
                 </div>
             </div>
 
+            <!-- Team Quick Pill in Sidebar -->
+            <div onclick="app.navigate('project_info')" class="mb-4 p-3 bg-indigo-50/70 hover:bg-indigo-100/70 rounded-2xl border border-indigo-100 cursor-pointer transition-colors">
+                <div class="flex items-center justify-between text-[10px] font-black text-indigo-900 uppercase tracking-wider">
+                    <span>PBL Project Group</span>
+                    <span class="px-1.5 py-0.5 bg-indigo-200 text-indigo-800 rounded">Eval 2</span>
+                </div>
+                <p class="text-[11px] text-slate-600 mt-1 font-semibold truncate">
+                    Saee • Ayusha • Pranav • Vaishnavi
+                </p>
+            </div>
+
             <nav class="space-y-1" id="nav-container">
                 <!-- Nav generated via JS -->
             </nav>
         </div>
 
-        <!-- PROFILE SWITCHER (GENDER NEUTRAL) -->
+        <!-- PROFILE SWITCHER -->
         <div class="mt-auto p-5 border-t border-slate-100 bg-slate-50/40">
             <div class="flex items-center justify-between mb-3">
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Profile</p>
-                <span id="active-role-badge" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">Admin</span>
+                <span id="active-role-badge" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">Pranav (5208)</span>
             </div>
             <div class="grid grid-cols-4 gap-1.5" id="profile-switcher">
                 <!-- Profiles generated via JS -->
@@ -92,39 +103,59 @@
     <main class="flex-1 flex flex-col relative overflow-hidden">
         
         <!-- TOP HEADER -->
-        <header class="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-8 flex items-center justify-between z-10 shrink-0">
-            <div class="flex items-center gap-4">
+        <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between z-10 shrink-0">
+            <div class="flex items-center gap-3">
                 <div id="api-status-badge" class="px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="status-text">VIRTUAL REST API: 200 OK</span>
+                    <span class="status-text">SQLITE + FASTAPI: 200 OK</span>
                 </div>
-                <span id="ai-mode-pill" class="px-3 py-1.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">
+                <span id="ai-mode-pill" class="hidden sm:inline-block px-3 py-1.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">
                     AI Advisor Ready
                 </span>
+                <button onclick="app.navigate('project_info')" class="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-[10px] font-bold text-slate-600 border border-slate-200 transition-colors">
+                    <i data-lucide="award" class="w-3.5 h-3.5 text-indigo-600"></i>
+                    <span>Team: Saee (5185) • Ayusha (3205) • Pranav (5208) • Vaishnavi (5188)</span>
+                </button>
             </div>
 
-            <div class="flex items-center gap-3">
-                <button onclick="app.openModal('ai-coach')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <button onclick="app.openModal('ai-coach')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
-                    <span>Domestix AI Coach</span>
+                    <span class="hidden md:inline">AI Coach</span>
                 </button>
-                <button onclick="app.openIngestHub('manual')" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
+                <button onclick="app.openIngestHub('manual')" class="bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
                     <i data-lucide="keyboard" class="w-4 h-4"></i>
-                    <span>Type & Add</span>
+                    <span class="hidden md:inline">Type & Add</span>
                 </button>
-                <button onclick="app.openIngestHub('upload')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-100 active:scale-95">
+                <button onclick="app.openIngestHub('upload')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-100 active:scale-95">
                     <i data-lucide="scan-line" class="w-4 h-4"></i>
-                    <span>Smart Scan / Upload</span>
+                    <span>Smart Scan</span>
                 </button>
+
                 <div class="h-8 w-[1px] bg-slate-200 mx-1"></div>
+
+                <!-- USER AUTH PILL -->
+                <div class="flex items-center gap-1.5">
+                    <button onclick="app.openModal('auth')" class="flex items-center gap-2 px-3 py-2 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 transition-all">
+                        <div id="header-avatar-circle" class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black">
+                            P
+                        </div>
+                        <span id="header-user-name" class="hidden sm:inline">Pranav Joshi</span>
+                        <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                    </button>
+                    <a href="login.html" title="Switch User or Logout" class="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </a>
+                </div>
+
                 <button onclick="app.openModal('settings')" title="API Key & Settings" class="p-2.5 bg-slate-50 text-slate-500 rounded-xl hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-slate-200/60">
-                    <i data-lucide="settings-2" class="w-5 h-5"></i>
+                    <i data-lucide="settings-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
         <!-- SCROLLABLE VIEW CONTAINER -->
-        <div id="view-container" class="flex-1 overflow-y-auto p-8 custom-scrollbar relative bg-[#fcfdfe]">
+        <div id="view-container" class="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar relative bg-[#fcfdfe]">
             <!-- Dynamic content injected here -->
         </div>
     </main>
@@ -133,6 +164,65 @@
     <div id="toast-box" class="fixed bottom-6 right-6 z-[200] hidden bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-bold border border-white/10">
         <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
         <span id="toast-msg">Saved successfully</span>
+    </div>
+
+    <!-- MODAL 0: USER AUTH & SWITCH ACCOUNT MODAL -->
+    <div id="modal-auth" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg rounded-[32px] shadow-2xl overflow-hidden border border-slate-100 p-8 space-y-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900">User Account & Profile</h3>
+                    <p class="text-xs text-slate-400">Switch active household member or log in</p>
+                </div>
+                <button onclick="app.closeModal('auth')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <!-- Current Logged In Info -->
+            <div class="p-4 bg-indigo-50/70 border border-indigo-100 rounded-2xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div id="modal-user-avatar" class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm">
+                        P
+                    </div>
+                    <div>
+                        <h4 id="modal-user-name" class="font-black text-slate-900 text-sm">Pranav Joshi</h4>
+                        <p id="modal-user-role" class="text-xs text-slate-500">Project Lead & Backend (5208)</p>
+                    </div>
+                </div>
+                <span class="text-[10px] font-black px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg uppercase">Active</span>
+            </div>
+
+            <!-- Fast Switch To Any Team Member -->
+            <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">1-Click Fast Switch to Team Member</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="app.switchAuthUser('Pranav Joshi', 'Project Lead & Backend', '5208')" class="p-3 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl text-left transition-colors">
+                        <p class="text-xs font-black text-slate-800">Pranav Joshi</p>
+                        <p class="text-[10px] text-slate-400">Roll No: 5208 • Lead</p>
+                    </button>
+                    <button onclick="app.switchAuthUser('Saee Takale', 'Lead Analyst & Inventory', '5185')" class="p-3 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl text-left transition-colors">
+                        <p class="text-xs font-black text-slate-800">Saee Takale</p>
+                        <p class="text-[10px] text-slate-400">Roll No: 5185 • Analyst</p>
+                    </button>
+                    <button onclick="app.switchAuthUser('Ayusha Kale', 'UI/UX & Shopping Lead', '3205')" class="p-3 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl text-left transition-colors">
+                        <p class="text-xs font-black text-slate-800">Ayusha Kale</p>
+                        <p class="text-[10px] text-slate-400">Roll No: 3205 • Frontend</p>
+                    </button>
+                    <button onclick="app.switchAuthUser('Vaishnavi Thite', 'Testing & Utilities Lead', '5188')" class="p-3 bg-slate-50 hover:bg-indigo-50 border border-slate-200 rounded-xl text-left transition-colors">
+                        <p class="text-xs font-black text-slate-800">Vaishnavi Thite</p>
+                        <p class="text-[10px] text-slate-400">Roll No: 5188 • Testing</p>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <a href="login.html" class="flex-1 bg-slate-900 hover:bg-indigo-600 text-white py-3 rounded-xl font-bold text-xs text-center transition-colors">
+                    Open Full Login & Signup Portal
+                </a>
+                <button onclick="app.logoutUser()" class="px-5 py-3 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs rounded-xl transition-colors">
+                    Logout
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- MODAL 1: SMART INGESTION HUB (5-WAY ENTRY + PRECISION EXPIRY) -->
@@ -265,7 +355,7 @@
                             </div>
                         </div>
 
-                        <!-- Optional Label Hints so Expiry Date NEVER Fails -->
+                        <!-- Optional Label Hints -->
                         <div class="w-full max-w-lg bg-slate-50 p-5 rounded-3xl border border-slate-200/80 space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-[11px] font-black text-slate-600 uppercase tracking-wider">Label Assist / Date Override (Optional)</span>
@@ -326,7 +416,7 @@
                             <canvas id="handwriting-canvas" width="620" height="240" class="w-full h-[240px]"></canvas>
                         </div>
                         <div class="w-full max-w-2xl grid grid-cols-2 gap-3">
-                            <input id="draw-hint-name" type="text" placeholder="Or type written note note here (e.g. Paneer 500g)" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none">
+                            <input id="draw-hint-name" type="text" placeholder="Or type written note here (e.g. Paneer 500g)" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none">
                             <input id="draw-hint-exp" type="date" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none">
                         </div>
                         <button onclick="hub.processOCR('draw')" class="w-full max-w-2xl bg-indigo-600 text-white py-3.5 rounded-2xl font-black text-xs shadow-xl">RECOGNIZE HANDWRITING & ADD</button>
@@ -460,14 +550,14 @@
     <div id="modal-settings" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden border border-slate-100 p-8 space-y-6">
             <div class="flex justify-between items-center">
-                <h3 class="text-lg font-black text-slate-900">Platform Settings & AI Key</h3>
+                <h3 class="text-lg font-black text-slate-900">Platform Settings & API Key</h3>
                 <button onclick="app.closeModal('settings')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Google Gemini API Key (Optional)</label>
-                    <p class="text-[11px] text-slate-400 mb-2">Paste your key from Google AI Studio for live Vision OCR on uploaded expiry labels. Leave blank to use the built-in Smart Offline Engine.</p>
+                    <p class="text-[11px] text-slate-400 mb-2">Paste key from Google AI Studio for live Vision OCR on uploaded expiry labels. Leave blank to use the built-in Smart Offline Engine.</p>
                     <input id="settings-gemini-key" type="password" placeholder="AIzaSy..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
 
@@ -486,21 +576,22 @@
 
 <script>
 /**
- * DOMESTIX ENTERPRISE CORE ENGINE (100% STANDALONE SINGLE-FILE OS)
+ * DOMESTIX ENTERPRISE CORE ENGINE
+ * Dual-Mode: Live Python FastAPI + SQLite REST Backend & Fallback Virtual REST Persistence
  */
 
 const STATE_KEY = 'domestix_enterprise_v3';
 const API_LOG = [];
+const API_BASE = window.location.origin.includes('8000') ? '' : 'http://127.0.0.1:8000';
 
-// GENDER-NEUTRAL PROFILES WITH STANDARD VECTOR ICONS
+// PROJECT TEAM PROFILES (AS PER SLIDE 1)
 const PROFILES = [
-    { name: 'Kiran', role: 'Household Admin', icon: 'shield', color: 'indigo' },
-    { name: 'Arya', role: 'Kitchen & Stock', icon: 'sparkles', color: 'emerald' },
-    { name: 'Dev', role: 'Appliances/Bills', icon: 'wrench', color: 'amber' },
-    { name: 'Niki', role: 'Shopping Lead', icon: 'shopping-bag', color: 'sky' }
+    { name: 'Pranav', fullName: 'Pranav Joshi', role: 'Project Lead & Backend', rollNo: '5208', icon: 'shield', color: 'indigo' },
+    { name: 'Saee', fullName: 'Saee Takale', role: 'Lead Analyst & Inventory', rollNo: '5185', icon: 'sparkles', color: 'emerald' },
+    { name: 'Ayusha', fullName: 'Ayusha Kale', role: 'UI/UX & Shopping Lead', rollNo: '3205', icon: 'shopping-bag', color: 'sky' },
+    { name: 'Vaishnavi', fullName: 'Vaishnavi Thite', role: 'Testing & Utilities Lead', rollNo: '5188', icon: 'wrench', color: 'amber' }
 ];
 
-// HELPER FOR DYNAMIC DATES SO DEMO IS ALWAYS FRESH
 function offsetDate(days) {
     const d = new Date();
     d.setDate(d.getDate() + days);
@@ -516,8 +607,8 @@ const DEFAULT_DB = {
         { id: 5, name: 'Paracetamol 650mg', qty: 15, unit: 'pcs', exp: offsetDate(240), cat: 'Medicine', price: 35, tip: 'Store in a dry cabinet away from direct sunlight.' }
     ],
     shopping: [
-        { id: 101, name: 'Greek Yogurt / Curd', qty: 1, unit: 'pk', price: 65, cat: 'Dairy', assigned: 'Arya', checked: false },
-        { id: 102, name: 'Dishwash Gel Refill', qty: 1, unit: 'L', price: 145, cat: 'Cleaning', assigned: 'Niki', checked: true }
+        { id: 101, name: 'Greek Yogurt / Curd', qty: 1, unit: 'pk', price: 65, cat: 'Dairy', assigned: 'Ayusha Kale', checked: false },
+        { id: 102, name: 'Dishwash Gel Refill', qty: 1, unit: 'L', price: 145, cat: 'Cleaning', assigned: 'Vaishnavi Thite', checked: true }
     ],
     assets: [
         { id: 201, name: 'Blue Star Split AC', serial: 'BS-AC-9021', warranty: offsetDate(320), service: offsetDate(14), note: 'Clean indoor air filter mesh & check outdoor condenser fan' },
@@ -525,19 +616,19 @@ const DEFAULT_DB = {
         { id: 203, name: 'Aquaguard RO Purifier', serial: 'AQ-RO-1182', warranty: offsetDate(25), service: offsetDate(-3), note: 'Replace sediment & carbon cartridge filters' }
     ],
     bills: [
-        { id: 301, name: 'MSEDCL Electricity Bill', amount: 1840, due: offsetDate(4), assigned: 'Kiran', status: 'Unpaid' },
-        { id: 302, name: 'JioFiber Broadband Wi-Fi', amount: 999, due: offsetDate(9), assigned: 'Dev', status: 'Unpaid' },
-        { id: 303, name: 'Society Maintenance', amount: 2500, due: offsetDate(-5), assigned: 'Kiran', status: 'Paid' }
+        { id: 301, name: 'MSEDCL Electricity Bill', amount: 1840, due: offsetDate(4), assigned: 'Pranav Joshi', status: 'Unpaid' },
+        { id: 302, name: 'JioFiber Broadband Wi-Fi', amount: 999, due: offsetDate(9), assigned: 'Ayusha Kale', status: 'Unpaid' },
+        { id: 303, name: 'Society Maintenance', amount: 2500, due: offsetDate(-5), assigned: 'Saee Takale', status: 'Paid' }
     ],
     completedTasks: [
-        { id: 901, title: 'Paid Society Maintenance (₹2500)', date: offsetDate(-5), by: 'Kiran' }
+        { id: 901, title: 'Paid Society Maintenance (₹2500)', date: offsetDate(-5), by: 'Saee Takale' }
     ],
-    config: { activeProfile: 'Kiran', geminiKey: '', taskFilter: 'upcoming' }
+    config: { activeProfile: 'Pranav', geminiKey: '', taskFilter: 'upcoming' }
 };
 
 let db = JSON.parse(localStorage.getItem(STATE_KEY)) || JSON.parse(JSON.stringify(DEFAULT_DB));
 
-// --- STORAGE TIP GENERATOR ---
+// Storage Tip Generator
 function getStorageTip(name, cat) {
     const n = (name || '').toLowerCase();
     if (n.includes('milk')) return 'Keep on middle refrigerator shelf (4°C), avoid fridge door.';
@@ -549,12 +640,123 @@ function getStorageTip(name, cat) {
     return 'Keep sealed in a cool, dry place away from direct heat.';
 }
 
-// --- BUILT-IN VIRTUAL REST SERVER (NO EXTERNAL NODE.JS REQUIRED) ---
+// REST ENGINE (LIVE FASTAPI + VIRTUAL REST FALLBACK)
 const engine = {
-    init() {
-        this.logAPI('GET', '200 OK - Loaded Household Database Snapshot', '/api/v1/household');
+    isLiveBackend: false,
+
+    async init() {
+        // Check for stored user authentication
+        this.syncAuthUser();
+
+        // Check live FastAPI server status
+        try {
+            const res = await fetch(`${API_BASE}/api/system/info`);
+            if (res.ok) {
+                const sysInfo = await res.json();
+                this.isLiveBackend = true;
+                this.logAPI('GET', '200 OK - Connected to FastAPI & SQLite Database', '/api/system/info');
+                
+                // Fetch fresh records from SQLite backend
+                await this.fetchBackendData();
+            } else {
+                throw new Error();
+            }
+        } catch (e) {
+            this.isLiveBackend = false;
+            this.logAPI('GET', '200 OK - Standalone Virtual REST Engine Activated', '/api/v1/household');
+        }
+
         this.updateHeaderBadges();
         app.render();
+    },
+
+    syncAuthUser() {
+        const stored = localStorage.getItem('domestix_auth_user');
+        if (stored) {
+            try {
+                const user = JSON.parse(stored);
+                db.config.activeProfile = user.full_name.split(' ')[0];
+                const headerName = document.getElementById('header-user-name');
+                const avatarCircle = document.getElementById('header-avatar-circle');
+                if (headerName) headerName.innerText = user.full_name;
+                if (avatarCircle) avatarCircle.innerText = user.full_name.charAt(0);
+            } catch (e) {}
+        }
+    },
+
+    async fetchBackendData() {
+        try {
+            const [invRes, shopRes, appRes, billRes] = await Promise.all([
+                fetch(`${API_BASE}/api/inventory`),
+                fetch(`${API_BASE}/api/shopping`),
+                fetch(`${API_BASE}/api/appliances`),
+                fetch(`${API_BASE}/api/bills`)
+            ]);
+
+            if (invRes.ok) {
+                const invData = await invRes.json();
+                if (invData.inventory && invData.inventory.length > 0) {
+                    db.inventory = invData.inventory.map(i => ({
+                        id: i.id,
+                        name: i.name,
+                        cat: i.category,
+                        qty: i.quantity,
+                        unit: i.unit,
+                        price: i.price,
+                        exp: i.expiry_date,
+                        tip: i.storage_tip
+                    }));
+                }
+            }
+
+            if (shopRes.ok) {
+                const shopData = await shopRes.json();
+                if (shopData.shopping_items && shopData.shopping_items.length > 0) {
+                    db.shopping = shopData.shopping_items.map(s => ({
+                        id: s.id,
+                        name: s.name,
+                        cat: s.category,
+                        qty: s.quantity,
+                        unit: s.unit,
+                        price: s.estimated_price,
+                        assigned: s.assigned_to,
+                        checked: Boolean(s.is_checked)
+                    }));
+                }
+            }
+
+            if (appRes.ok) {
+                const appData = await appRes.json();
+                if (appData.appliances && appData.appliances.length > 0) {
+                    db.assets = appData.appliances.map(a => ({
+                        id: a.id,
+                        name: a.name,
+                        serial: a.serial_number,
+                        warranty: a.warranty_expiry,
+                        service: a.next_service_date,
+                        note: a.maintenance_notes
+                    }));
+                }
+            }
+
+            if (billRes.ok) {
+                const billData = await billRes.json();
+                if (billData.bills && billData.bills.length > 0) {
+                    db.bills = billData.bills.map(b => ({
+                        id: b.id,
+                        name: b.name,
+                        amount: b.amount,
+                        due: b.due_date,
+                        assigned: b.assigned_to,
+                        status: b.status
+                    }));
+                }
+            }
+
+            localStorage.setItem(STATE_KEY, JSON.stringify(db));
+        } catch (err) {
+            console.log('Error pulling backend data:', err);
+        }
     },
 
     save(actionDesc = 'Updated state snapshot') {
@@ -584,6 +786,16 @@ const engine = {
     },
 
     updateHeaderBadges() {
+        const statusBadge = document.getElementById('api-status-badge');
+        if (statusBadge) {
+            if (this.isLiveBackend) {
+                statusBadge.className = "px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200";
+                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="status-text">FASTAPI + SQLITE: 200 OK</span>`;
+            } else {
+                statusBadge.className = "px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-indigo-50 text-indigo-700 border border-indigo-200";
+                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-indigo-500"></span><span class="status-text">STANDALONE REST: 200 OK</span>`;
+            }
+        }
         const pill = document.getElementById('ai-mode-pill');
         if (pill) {
             pill.innerText = db.config.geminiKey ? 'GEMINI VISION: LIVE' : 'SMART AI ENGINE: ACTIVE';
@@ -591,7 +803,7 @@ const engine = {
     }
 };
 
-// --- MAIN UI CONTROLLER ---
+// APPLICATION UI CONTROLLER
 const app = {
     views: [
         { id: 'dashboard', label: 'Overview', icon: 'layout-dashboard' },
@@ -600,7 +812,8 @@ const app = {
         { id: 'assets', label: 'Appliances', icon: 'wrench' },
         { id: 'bills', label: 'Utilities & Bills', icon: 'calendar-clock' },
         { id: 'analytics', label: 'Analytics', icon: 'bar-chart-3' },
-        { id: 'backend', label: 'Architecture', icon: 'database' }
+        { id: 'backend', label: 'Architecture', icon: 'database' },
+        { id: 'project_info', label: 'Project & Team Dossier', icon: 'book-open' }
     ],
     currentView: 'dashboard',
     invSearch: '',
@@ -633,7 +846,13 @@ const app = {
     renderProfiles() {
         const activeObj = PROFILES.find(p => p.name === db.config.activeProfile) || PROFILES[0];
         const roleBadge = document.getElementById('active-role-badge');
-        if (roleBadge) roleBadge.innerText = activeObj.role;
+        if (roleBadge) roleBadge.innerText = `${activeObj.name} (${activeObj.rollNo})`;
+
+        // Also sync header
+        const headerName = document.getElementById('header-user-name');
+        const avatarCircle = document.getElementById('header-avatar-circle');
+        if (headerName) headerName.innerText = activeObj.fullName;
+        if (avatarCircle) avatarCircle.innerText = activeObj.name.charAt(0);
 
         const container = document.getElementById('profile-switcher');
         container.innerHTML = PROFILES.map(p => `
@@ -651,9 +870,40 @@ const app = {
     },
 
     setProfile(name) {
-        db.config.activeProfile = name;
-        this.toast(`Switched active profile to ${name}`);
-        engine.save(`Active profile changed to ${name}`);
+        const found = PROFILES.find(p => p.name === name);
+        if (found) {
+            db.config.activeProfile = name;
+            localStorage.setItem('domestix_auth_user', JSON.stringify({
+                id: Date.now(),
+                username: name.toLowerCase(),
+                full_name: found.fullName,
+                role: found.role,
+                roll_no: found.rollNo
+            }));
+            this.toast(`Active operator switched to ${found.fullName} (${found.rollNo})`);
+            engine.save(`Active profile changed to ${name}`);
+        }
+    },
+
+    switchAuthUser(fullName, role, rollNo) {
+        const shortName = fullName.split(' ')[0];
+        localStorage.setItem('domestix_auth_user', JSON.stringify({
+            id: Date.now(),
+            username: shortName.toLowerCase(),
+            full_name: fullName,
+            role,
+            roll_no: rollNo
+        }));
+        this.setProfile(shortName);
+        this.closeModal('auth');
+    },
+
+    logoutUser() {
+        localStorage.removeItem('domestix_auth_user');
+        this.toast('Logged out successfully');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 500);
     },
 
     daysDiff(dateStr) {
@@ -676,10 +926,11 @@ const app = {
             case 'bills': this.viewBills(container); break;
             case 'analytics': this.viewAnalytics(container); break;
             case 'backend': this.viewBackend(container); break;
+            case 'project_info': this.viewProjectInfo(container); break;
         }
     },
 
-    // --- VIEW 1: OVERVIEW DASHBOARD & TASK LIFECYCLE ---
+    // --- VIEW 1: DASHBOARD ---
     viewDashboard(el) {
         const expSoon = db.inventory.filter(i => {
             const d = this.daysDiff(i.exp);
@@ -689,7 +940,6 @@ const app = {
         const unpaidBills = db.bills.filter(b => b.status === 'Unpaid');
         const pendingAmount = unpaidBills.reduce((a, b) => a + Number(b.amount), 0);
 
-        // Compile Unified Tasks (Upcoming vs Overdue vs Completed)
         const upcomingTasks = [
             ...expSoon.map(i => ({ title: `Consume ${i.name} (${i.qty}${i.unit})`, sub: `Expires in ${this.daysDiff(i.exp)} days (${i.exp})`, badge: 'EXPIRY SOON', color: 'amber', action: `app.consumeInventory(${i.id})`, btnText: 'Mark Used' })),
             ...unpaidBills.filter(b => this.daysDiff(b.due) >= 0).map(b => ({ title: `Pay ${b.name} (₹${b.amount})`, sub: `Due on ${b.due} • Assigned: ${b.assigned}`, badge: 'BILL DUE', color: 'indigo', action: `app.payBill(${b.id})`, btnText: 'Pay ₹' + b.amount })),
@@ -705,16 +955,18 @@ const app = {
         const activeTab = db.config.taskFilter || 'upcoming';
         const displayTasks = activeTab === 'upcoming' ? upcomingTasks : (activeTab === 'overdue' ? overdueTasks : db.completedTasks);
 
+        const currentProfileObj = PROFILES.find(p => p.name === db.config.activeProfile) || PROFILES[0];
+
         el.innerHTML = `
             <div class="space-y-8">
                 <!-- SCENIC HERO BANNER -->
-                <div class="scenic-banner w-full rounded-[36px] p-10 shadow-xl overflow-hidden relative flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+                <div class="scenic-banner w-full rounded-[36px] p-8 sm:p-10 shadow-xl overflow-hidden relative flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
                     <div class="space-y-2 max-w-xl">
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest">
-                            <i data-lucide="home" class="w-3.5 h-3.5"></i> Active Operator: ${db.config.activeProfile}
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i> Active Operator: ${currentProfileObj.fullName} (${currentProfileObj.rollNo})
                         </div>
-                        <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">Domestic Operations Center.</h1>
-                        <p class="text-white/80 text-xs font-medium">Centralized Inventory, Expiry Prevention, Appliance Warranties & Recurring Bills.</p>
+                        <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">Domestic Operations Center.</h1>
+                        <p class="text-white/80 text-xs font-medium">Centralized Inventory, Expiry Prevention, Appliance Warranties & Recurring Utility Bills.</p>
                     </div>
 
                     <!-- Quick Natural Language Add Inside Hero -->
@@ -827,7 +1079,7 @@ const app = {
         const input = document.getElementById('hero-quick-input');
         if (!input || !input.value.trim()) return;
         const raw = input.value.trim();
-        db.inventory.unshift({
+        const newItem = {
             id: Date.now(),
             name: raw,
             qty: 1,
@@ -836,10 +1088,27 @@ const app = {
             cat: 'Groceries',
             price: 60,
             tip: getStorageTip(raw, 'Groceries')
-        });
+        };
+        db.inventory.unshift(newItem);
         input.value = '';
         this.toast(`Added "${raw}" to Inventory (+7d expiry)`);
         engine.save(`Quick-added ${raw}`);
+
+        // Sync with backend if connected
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/inventory`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: raw,
+                    category: 'Groceries',
+                    quantity: 1,
+                    unit: 'pcs',
+                    price: 60,
+                    expiry_date: offsetDate(7)
+                })
+            }).catch(e => console.log(e));
+        }
     },
 
     cardStat(label, val, icon, color, targetView) {
@@ -857,7 +1126,7 @@ const app = {
         `;
     },
 
-    // --- VIEW 2: SMART INVENTORY & EXPIRY TRACKER ---
+    // --- VIEW 2: SMART INVENTORY ---
     viewInventory(el) {
         const filtered = db.inventory.filter(item => {
             const matchSearch = item.name.toLowerCase().includes(this.invSearch.toLowerCase());
@@ -900,7 +1169,7 @@ const app = {
                                 <th class="px-6 py-4">Product & Price</th>
                                 <th class="px-6 py-4">Category</th>
                                 <th class="px-6 py-4">Quantity</th>
-                                <th class="px-6 py-4">Expiry Date (Click to Edit)</th>
+                                <th class="px-6 py-4">Expiry Date (Editable)</th>
                                 <th class="px-6 py-4">AI Storage Tip</th>
                                 <th class="px-6 py-4 text-right">Actions</th>
                             </tr>
@@ -982,7 +1251,6 @@ const app = {
         const item = db.inventory.find(i => i.id === id);
         if (!item) return;
         db.inventory = db.inventory.filter(i => i.id !== id);
-        // Auto-add to shopping list for smart replenishment
         if (!db.shopping.some(s => s.name.toLowerCase() === item.name.toLowerCase())) {
             db.shopping.push({
                 id: Date.now(),
@@ -1003,12 +1271,19 @@ const app = {
         });
         this.toast(`Consumed ${item.name} & added to Shopping List!`);
         engine.save(`Consumed ${item.name}`);
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/inventory/${id}/consume`, { method: 'POST' }).catch(e => console.log(e));
+        }
     },
 
     deleteItem(id) {
         db.inventory = db.inventory.filter(i => i.id !== id);
         this.toast('Item removed from inventory');
         engine.save('Deleted inventory item');
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/inventory/${id}`, { method: 'DELETE' }).catch(e => console.log(e));
+        }
     },
 
     // --- VIEW 3: SMART SHOPPING LIST ---
@@ -1027,7 +1302,7 @@ const app = {
                     </button>
                 </div>
 
-                <!-- Quick Suggestions -->
+                <!-- 1-Click Restock Suggestions -->
                 <div class="bg-indigo-50/70 border border-indigo-100 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
                     <span class="text-xs font-bold text-indigo-900 flex items-center gap-2">
                         <i data-lucide="sparkles" class="w-4 h-4 text-indigo-600"></i> 1-Click Restock Suggestions:
@@ -1077,24 +1352,46 @@ const app = {
         const input = document.getElementById('shop-input');
         const price = document.getElementById('shop-price');
         if (!input.value.trim()) return;
+        const name = input.value.trim();
+        const estPrice = parseFloat(price.value) || 50;
+
         db.shopping.push({
             id: Date.now(),
-            name: input.value.trim(),
+            name,
             qty: 1,
             unit: 'pcs',
-            price: parseFloat(price.value) || 50,
+            price: estPrice,
             cat: 'Groceries',
             assigned: db.config.activeProfile,
             checked: false
         });
         input.value = '';
         engine.save('Added manual shopping item');
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/shopping`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name,
+                    category: 'Groceries',
+                    quantity: 1,
+                    unit: 'pcs',
+                    estimated_price: estPrice,
+                    assigned_to: db.config.activeProfile
+                })
+            }).catch(e => console.log(e));
+        }
     },
 
     toggleShop(id) {
         const item = db.shopping.find(s => s.id === id);
         if (item) item.checked = !item.checked;
         engine.save('Toggled shopping list item');
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/shopping/${id}/toggle`, { method: 'PATCH' }).catch(e => console.log(e));
+        }
     },
 
     checkoutShopping() {
@@ -1116,15 +1413,23 @@ const app = {
         db.shopping = db.shopping.filter(s => !s.checked);
         this.toast(`Moved ${bought.length} purchased item(s) to Inventory!`);
         engine.save('Checked out shopping items to inventory');
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/shopping/checkout`, { method: 'POST' }).catch(e => console.log(e));
+        }
+
         this.navigate('inventory');
     },
 
     deleteShop(id) {
         db.shopping = db.shopping.filter(s => s.id !== id);
         engine.save('Removed shopping item');
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/shopping/${id}`, { method: 'DELETE' }).catch(e => console.log(e));
+        }
     },
 
-    // --- VIEW 4: APPLIANCE MAINTENANCE & WARRANTY VAULT ---
+    // --- VIEW 4: APPLIANCE MAINTENANCE ---
     viewAssets(el) {
         el.innerHTML = `
             <div class="space-y-6">
@@ -1203,16 +1508,31 @@ const app = {
         const warranty = document.getElementById('asset-warranty').value;
         const service = document.getElementById('asset-service').value;
         if (!name) return;
-        db.assets.unshift({
+        const newAsset = {
             id: Date.now(),
             name,
             serial: 'DOM-' + Math.floor(1000 + Math.random() * 9000),
             warranty: warranty || offsetDate(365),
             service: service || offsetDate(90),
             note: 'Routine filter & performance inspection'
-        });
+        };
+        db.assets.unshift(newAsset);
         this.toast(`Registered ${name} in Warranty Vault`);
         engine.save(`Added appliance ${name}`);
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/appliances`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name,
+                    serial_number: newAsset.serial,
+                    warranty_expiry: newAsset.warranty,
+                    next_service_date: newAsset.service,
+                    maintenance_notes: newAsset.note
+                })
+            }).catch(e => console.log(e));
+        }
     },
 
     completeService(id) {
@@ -1227,14 +1547,21 @@ const app = {
         });
         this.toast(`Logged service for ${asset.name}! Next service scheduled in 6 months.`);
         engine.save(`Logged service for ${asset.name}`);
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/appliances/${id}/service`, { method: 'POST' }).catch(e => console.log(e));
+        }
     },
 
     deleteAsset(id) {
         db.assets = db.assets.filter(a => a.id !== id);
         engine.save('Deleted appliance');
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/appliances/${id}`, { method: 'DELETE' }).catch(e => console.log(e));
+        }
     },
 
-    // --- VIEW 5: RECURRING BILLS & UTILITIES ---
+    // --- VIEW 5: RECURRING BILLS ---
     viewBills(el) {
         el.innerHTML = `
             <div class="max-w-4xl mx-auto space-y-6">
@@ -1243,7 +1570,6 @@ const app = {
                     <p class="text-xs text-slate-400">Track monthly utility obligations and shared member assignments</p>
                 </div>
 
-                <!-- Add Bill Bar -->
                 <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm grid grid-cols-1 sm:grid-cols-5 gap-3">
                     <input id="bill-name" type="text" placeholder="Bill Name (e.g. Piped Gas Bill)" class="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none">
                     <input id="bill-amount" type="number" placeholder="Amount (₹)" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none">
@@ -1262,7 +1588,7 @@ const app = {
                                     </div>
                                     <div>
                                         <p class="font-black text-slate-900 text-sm">${b.name}</p>
-                                        <p class="text-xs text-slate-400">Due: ${b.due} (${b.status==='Paid'?'Settled':(d<0?Math.abs(d)+'d overdue':d+'d left')}) • Assigned: <b>${b.assigned || 'Kiran'}</b></p>
+                                        <p class="text-xs text-slate-400">Due: ${b.due} (${b.status==='Paid'?'Settled':(d<0?Math.abs(d)+'d overdue':d+'d left')}) • Assigned: <b>${b.assigned || 'Pranav'}</b></p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-5">
@@ -1289,9 +1615,25 @@ const app = {
         const amount = parseFloat(document.getElementById('bill-amount').value) || 500;
         const due = document.getElementById('bill-due').value || offsetDate(7);
         if (!name) return;
-        db.bills.unshift({ id: Date.now(), name, amount, due, assigned: db.config.activeProfile, status: 'Unpaid' });
+        const newBill = { id: Date.now(), name, amount, due, assigned: db.config.activeProfile, status: 'Unpaid' };
+        db.bills.unshift(newBill);
         this.toast(`Added ${name} (₹${amount})`);
         engine.save(`Added bill ${name}`);
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/bills`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name,
+                    category: 'Utility',
+                    amount,
+                    due_date: due,
+                    assigned_to: db.config.activeProfile,
+                    status: 'Unpaid'
+                })
+            }).catch(e => console.log(e));
+        }
     },
 
     payBill(id) {
@@ -1306,14 +1648,21 @@ const app = {
         });
         this.toast(`Marked ${bill.name} as Paid!`);
         engine.save(`Paid bill ${bill.name}`);
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/bills/${id}/pay`, { method: 'POST' }).catch(e => console.log(e));
+        }
     },
 
     deleteBill(id) {
         db.bills = db.bills.filter(b => b.id !== id);
         engine.save('Deleted bill record');
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/bills/${id}`, { method: 'DELETE' }).catch(e => console.log(e));
+        }
     },
 
-    // --- VIEW 6: BUDGET ANALYTICS & WASTE REDUCTION REPORT ---
+    // --- VIEW 6: BUDGET ANALYTICS ---
     viewAnalytics(el) {
         const invValue = db.inventory.reduce((a, b) => a + (Number(b.price) || 0), 0);
         const billTotal = db.bills.reduce((a, b) => a + (Number(b.amount) || 0), 0);
@@ -1347,13 +1696,13 @@ const app = {
         `;
     },
 
-    // --- VIEW 7: SYSTEM ARCHITECTURE & LIVE REST API CONSOLE ---
+    // --- VIEW 7: SYSTEM ARCHITECTURE & REST LOG ---
     viewBackend(el) {
         el.innerHTML = `
             <div class="space-y-8">
                 <div class="flex justify-between items-center">
                     <div>
-                        <h2 class="text-2xl font-black text-slate-900">5-Layer System Architecture & Virtual REST Console</h2>
+                        <h2 class="text-2xl font-black text-slate-900">5-Layer System Architecture & REST Console</h2>
                         <p class="text-xs text-slate-400">PBL Evaluation 2 Reference Architecture & Real-Time State Persistence Log</p>
                     </div>
                     <button onclick="app.exportDB()" class="px-4 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl flex items-center gap-2">
@@ -1367,16 +1716,16 @@ const app = {
                         <h4 class="text-xs font-black text-indigo-600 uppercase tracking-widest">5-Layer Modular Architecture</h4>
                         <div class="space-y-2.5">
                             <div class="p-4 bg-indigo-600 text-white rounded-2xl text-xs font-bold flex justify-between">
-                                <span>1. User Layer</span><span>Dashboard, Scanner, Handwriting & Mobile UI</span>
+                                <span>1. User Layer</span><span>Web Dashboard, Scanner, Handwriting & Mobile UI</span>
                             </div>
                             <div class="p-4 bg-indigo-500 text-white rounded-2xl text-xs font-bold flex justify-between">
                                 <span>2. Application Layer</span><span>Inventory, Shopping, Maintenance, Warranty, Bills</span>
                             </div>
                             <div class="p-4 bg-indigo-400 text-white rounded-2xl text-xs font-bold flex justify-between">
-                                <span>3. Service Layer</span><span>Gemini Vision OCR, Expiry Parser & Reminder Engine</span>
+                                <span>3. Service Layer</span><span>FastAPI OCR, Expiry Parser & Reminder Engine</span>
                             </div>
                             <div class="p-4 bg-slate-800 text-white rounded-2xl text-xs font-bold flex justify-between">
-                                <span>4. Data Layer</span><span>Virtual REST Controller & JSON Persistence</span>
+                                <span>4. Data Layer</span><span>SQLite3 Relational DB (domestix.db) & JSON Sync</span>
                             </div>
                             <div class="p-4 bg-emerald-600 text-white rounded-2xl text-xs font-bold flex justify-between">
                                 <span>5. Output Layer</span><span>Prioritized Alerts, Rescue Recipes & Analytics</span>
@@ -1387,20 +1736,131 @@ const app = {
                     <!-- Live REST Console -->
                     <div class="bg-slate-900 rounded-[32px] p-7 flex flex-col h-[360px] shadow-xl">
                         <div class="flex justify-between items-center mb-4">
-                            <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">Live Virtual REST API Transaction Log</span>
-                            <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">200 OK ACTIVE</span>
+                            <span class="text-[11px] font-black text-indigo-400 uppercase tracking-widest">Live REST API Transaction Log</span>
+                            <span class="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">${engine.isLiveBackend ? 'SQLITE LIVE' : 'VIRTUAL REST'}</span>
                         </div>
                         <div class="flex-1 overflow-y-auto space-y-2.5 custom-scrollbar pr-2">
                             ${API_LOG.map(log => `
                                 <div class="api-log-entry p-3 bg-white/5 border-l-2 border-emerald-400 rounded-r-xl">
                                     <div class="flex justify-between text-slate-400 mb-0.5">
                                         <span>[${log.timestamp}]</span>
-                                        <span class="text-emerald-300 font-bold">${log.method}${log.endpoint}</span>
+                                        <span class="text-emerald-300 font-bold">${log.method} ${log.endpoint}</span>
                                     </div>
                                     <div class="text-white">${log.msg}</div>
                                 </div>
                             `).join('')}
                         </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // --- VIEW 8: TEAM & PBL DOSSIER (SLIDES 1-18) ---
+    viewProjectInfo(el) {
+        el.innerHTML = `
+            <div class="space-y-8 max-w-5xl">
+                <div>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100">
+                        PBL Project Presentation Dossier
+                    </span>
+                    <h2 class="text-3xl font-black text-slate-900 mt-2">SMART HOUSEHOLD MANAGEMENT APPLICATION</h2>
+                    <p class="text-xs text-slate-500 mt-1">A unified platform for inventory, shopping, maintenance, warranties and recurring tasks</p>
+                </div>
+
+                <!-- Team Cards (Slide 1) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black">5185</div>
+                        <div>
+                            <h4 class="font-black text-slate-900 text-sm">Saee Takale</h4>
+                            <p class="text-[11px] text-slate-400 font-bold">Roll No: 5185</p>
+                            <span class="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mt-1 inline-block">Project Lead / Analyst</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center font-black">3205</div>
+                        <div>
+                            <h4 class="font-black text-slate-900 text-sm">Ayusha Kale</h4>
+                            <p class="text-[11px] text-slate-400 font-bold">Roll No: 3205</p>
+                            <span class="text-[10px] font-black text-sky-600 bg-sky-50 px-2 py-0.5 rounded mt-1 inline-block">Frontend Developer</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">5208</div>
+                        <div>
+                            <h4 class="font-black text-slate-900 text-sm">Pranav Joshi</h4>
+                            <p class="text-[11px] text-slate-400 font-bold">Roll No: 5208</p>
+                            <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded mt-1 inline-block">Backend & DB Developer</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-black">5188</div>
+                        <div>
+                            <h4 class="font-black text-slate-900 text-sm">Vaishnavi Thite</h4>
+                            <p class="text-[11px] text-slate-400 font-bold">Roll No: 5188</p>
+                            <span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded mt-1 inline-block">OCR & Notification Lead</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem Statement & Objectives (Slides 8 & 9) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm space-y-3">
+                        <h4 class="text-sm font-black text-indigo-700 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="target" class="w-4 h-4"></i> Problem Statement (Slide 8)
+                        </h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            How can a single smart household-management platform reduce the effort of manually tracking purchases, household inventory, expiry dates, shopping needs, appliance maintenance, warranties and recurring bills, while providing timely and relevant reminders?
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm space-y-3">
+                        <h4 class="text-sm font-black text-emerald-700 uppercase tracking-wider flex items-center gap-2">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i> Key Objectives (Slide 9)
+                        </h4>
+                        <ul class="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+                            <li>Develop a centralized household inventory database with SQLite.</li>
+                            <li>Enable scanning of bills/receipts and product expiry information.</li>
+                            <li>Maintain shopping lists and auto-replenish stock after purchases.</li>
+                            <li>Track product expiry dates and schedule appliance maintenance.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 8-Week Timeline (Slide 11) -->
+                <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm space-y-4">
+                    <h4 class="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-4 h-4 text-indigo-600"></i> 8-Week Implementation Plan (Slide 11)
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 1:</b> Requirements</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 2:</b> UI/UX & DB Design</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 3:</b> Core Setup & Auth</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 4:</b> Inventory & Shopping</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 5:</b> Scanning & OCR</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 6:</b> Reminders & Alerts</div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 7:</b> Integration & Testing</div>
+                        <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl font-bold text-indigo-700"><b>Week 8:</b> Final Eval 2 Prep</div>
+                    </div>
+                </div>
+
+                <!-- 10 IEEE Literature Survey References (Slide 18) -->
+                <div class="bg-white p-6 rounded-[28px] border border-slate-200/80 shadow-sm space-y-4">
+                    <h4 class="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="book-marked" class="w-4 h-4 text-indigo-600"></i> Literature Survey – 10 IEEE Research Papers (Slide 18)
+                    </h4>
+                    <div class="space-y-2 text-xs text-slate-600">
+                        <p><b>[1]</b> Intelligent Grocery Management System Using IoT for Personalized Shopping and Inventory Management, IEEE ICoACT, 2025.</p>
+                        <p><b>[2]</b> An AI Smart Refrigerator: Enhancing Food Management with Computer Vision, Sensor, IoT, IEEE ICETEA, 2025.</p>
+                        <p><b>[3]</b> A Technology-Driven Solution for Food Waste Management: Enhancing Sustainability, IEEE ICIMTech, 2025.</p>
+                        <p><b>[4]</b> An AI-Powered Food Expiry Optimizer and Meal Planner, IEEE ICoECIT, 2026.</p>
+                        <p><b>[5]</b> Architecture for Efficient Food Management and Waste Reduction, IEEE Conference Publication, 2024.</p>
+                        <p><b>[6]</b> Smart Refrigerator Inventory Management Using Convolutional Neural Networks, IEEE AICAS, 2021.</p>
+                        <p><b>[7]</b> IoT based Grocery Management System: Smart Refrigerator and Smart Cabinet, IEEE, 2019.</p>
+                        <p><b>[8]</b> Understanding Motivations for Using Grocery Shopping Applications, IEEE Pervasive Computing, 2015.</p>
+                        <p><b>[9]</b> Digital Twin-Based Dynamic Task Assignment for Smart Home Maintenance, IEEE ICC, 2024.</p>
+                        <p><b>[10]</b> Design and Implementation of an Android Application for Smart Shopping, IEEE ICCSP, 2019.</p>
                     </div>
                 </div>
             </div>
@@ -1415,7 +1875,7 @@ const app = {
         anchor.click();
     },
 
-    // --- MODALS & AI COACH ---
+    // --- MODALS ---
     openIngestHub(defaultTab = 'upload') {
         document.getElementById('modal-ingest-hub').classList.remove('hidden');
         document.getElementById('manual-exp').value = offsetDate(7);
@@ -1431,6 +1891,12 @@ const app = {
         }
         if (id === 'ai-coach') {
             this.renderAICoachWelcome();
+        }
+        if (id === 'auth') {
+            const currentProfile = PROFILES.find(p => p.name === db.config.activeProfile) || PROFILES[0];
+            document.getElementById('modal-user-name').innerText = currentProfile.fullName;
+            document.getElementById('modal-user-role').innerText = `${currentProfile.role} (${currentProfile.rollNo})`;
+            document.getElementById('modal-user-avatar').innerText = currentProfile.name.charAt(0);
         }
         lucide.createIcons();
     },
@@ -1477,26 +1943,44 @@ const app = {
             </div>
         `;
 
-        // Generate context-aware response
-        const expItems = db.inventory.filter(i => this.daysDiff(i.exp) <= 4).map(i => `${i.name} (exp: ${i.exp})`).join(', ') || 'No urgent items';
-        let reply = `Based on your current inventory (${db.inventory.map(i=>i.name).join(', ')}):
-        <br><br>• <b>Priority Action:</b> Use <b>${expItems}</b> first.
-        <br>• <b>Quick Vegetarian Meal Idea:</b> Make <i>Spiced Masala Oats</i> or <i>Paneer & Vegetable Toast</i> using your existing stock.
-        <br>• <b>Storage Reminder:</b> Keep dairy items at 4°C on the middle fridge shelf and dry staples in airtight jars.`;
+        let reply = '';
 
-        if (db.config.geminiKey) {
+        // If backend is live, call /api/ai/coach
+        if (engine.isLiveBackend) {
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${db.config.geminiKey}`, {
+                const res = await fetch(`${API_BASE}/api/ai/coach`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: `You are Domestix AI Household Advisor. Current inventory: ${JSON.stringify(db.inventory)}. Bills: ${JSON.stringify(db.bills)}. User asks: "${question}". Give a concise, practical 3-bullet answer.` }] }]
-                    })
+                    body: JSON.stringify({ prompt: question })
                 });
-                const data = await res.json();
-                const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (aiText) reply = aiText.replace(/\n/g, '<br>');
+                if (res.ok) {
+                    const data = await res.json();
+                    reply = data.response;
+                }
             } catch (e) {}
+        }
+
+        if (!reply) {
+            const expItems = db.inventory.filter(i => this.daysDiff(i.exp) <= 4).map(i => `${i.name} (exp: ${i.exp})`).join(', ') || 'No urgent items';
+            reply = `Based on your current inventory (${db.inventory.map(i=>i.name).join(', ')}):
+            <br><br>• <b>Priority Action:</b> Use <b>${expItems}</b> first.
+            <br>• <b>Quick Vegetarian Meal Idea:</b> Make <i>Spiced Masala Oats</i> or <i>Paneer & Vegetable Toast</i> using your existing stock.
+            <br>• <b>Storage Reminder:</b> Keep dairy items at 4°C on the middle fridge shelf and dry staples in airtight jars.`;
+
+            if (db.config.geminiKey) {
+                try {
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${db.config.geminiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: `You are Domestix AI Household Advisor. Current inventory: ${JSON.stringify(db.inventory)}. Bills: ${JSON.stringify(db.bills)}. User asks: "${question}". Give a concise, practical 3-bullet answer.` }] }]
+                        })
+                    });
+                    const data = await res.json();
+                    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (aiText) reply = aiText.replace(/\\n/g, '<br>');
+                } catch (e) {}
+            }
         }
 
         box.innerHTML += `
@@ -1509,7 +1993,7 @@ const app = {
     }
 };
 
-// --- SMART INGESTION HUB & PRECISION EXPIRY DATE EXTRACTOR ---
+// --- SMART INGESTION HUB & OCR PARSER ---
 const hub = {
     currentTab: 'upload',
     uploadedBase64: null,
@@ -1534,20 +2018,17 @@ const hub = {
         const raw = document.getElementById('nl-quick-input').value.trim();
         if (!raw) return;
 
-        // Parse days ("in 3 days", "5 days")
         let days = 7;
-        const dayMatch = raw.match(/(\d+)\s*day/i);
+        const dayMatch = raw.match(/(\\d+)\\s*day/i);
         if (dayMatch) days = parseInt(dayMatch[1]);
 
-        // Parse price ("₹130", "rs 130", "for 130")
         let price = 60;
-        const priceMatch = raw.match(/(?:₹|rs\.?|for)\s*(\d+)/i);
+        const priceMatch = raw.match(/(?:₹|rs\\.?|for)\\s*(\\d+)/i);
         if (priceMatch) price = parseInt(priceMatch[1]);
 
-        // Clean item name
         const cleanName = raw
             .replace(/expiring.*$/i, '')
-            .replace(/(?:₹|rs\.?|for)\s*\d+/i, '')
+            .replace(/(?:₹|rs\\.?|for)\\s*\\d+/i, '')
             .trim() || raw;
 
         document.getElementById('manual-name').value = cleanName;
@@ -1585,14 +2066,21 @@ const hub = {
         app.navigate('inventory');
         app.toast(`Added ${name} (Exp: ${exp}) to Inventory!`);
         engine.save(`Manually added ${name}`);
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/inventory`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, category: cat, quantity: qty, unit, price, expiry_date: exp })
+            }).catch(e => console.log(e));
+        }
     },
 
     previewFile(e) {
         const file = e.target.files[0];
         if (!file) return;
-        this.uploadedFileName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+        this.uploadedFileName = file.name.replace(/\\.[^/.]+$/, "").replace(/[-_]/g, " ");
 
-        // Auto-populate name hint if filename looks descriptive
         const hintName = document.getElementById('upload-hint-name');
         if (hintName && !hintName.value && !/^(img|dsc|photo|whatsapp|screenshot|image)/i.test(this.uploadedFileName)) {
             hintName.value = this.uploadedFileName;
@@ -1618,19 +2106,16 @@ const hub = {
         document.getElementById('upload-hint-exp').value = '';
     },
 
-    // --- SMART INDIAN DATE PARSER (CATCHES DD/MM/YYYY, DD-MM-YYYY, EXP STAMPS) ---
     extractDateFromText(str, fallbackDays = 7) {
         if (!str) return offsetDate(fallbackDays);
-        // Match DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
-        const dmy = str.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+        const dmy = str.match(/(\\d{1,2})[\\/\\-\\.](\\d{1,2})[\\/\\-\\.](\\d{2,4})/);
         if (dmy) {
             let day = dmy[1].padStart(2, '0');
             let month = dmy[2].padStart(2, '0');
             let year = dmy[3].length === 2 ? '20' + dmy[3] : dmy[3];
             return `${year}-${month}-${day}`;
         }
-        // Match YYYY-MM-DD
-        const iso = str.match(/(\d{4})-(\d{2})-(\d{2})/);
+        const iso = str.match(/(\\d{4})-(\\d{2})-(\\d{2})/);
         if (iso) return iso[0];
         return offsetDate(fallbackDays);
     },
@@ -1639,7 +2124,6 @@ const hub = {
         const overlay = document.getElementById('ocr-overlay');
         overlay.classList.remove('hidden');
 
-        // Gather user hints/overrides from active tab
         const nameHint = (mode === 'upload' ? document.getElementById('upload-hint-name')?.value :
                          mode === 'camera' ? document.getElementById('camera-hint-name')?.value :
                          document.getElementById('draw-hint-name')?.value)?.trim() || '';
@@ -1648,62 +2132,44 @@ const hub = {
                             mode === 'camera' ? document.getElementById('camera-hint-exp')?.value :
                             document.getElementById('draw-hint-exp')?.value) || '';
 
-        const todayISO = offsetDate(0);
-
-        // 1. IF GEMINI API KEY IS SET & IMAGE EXISTS -> REAL VISION OCR
-        let imagePayload = this.uploadedBase64;
-        if (mode === 'draw') {
-            const canvas = document.getElementById('handwriting-canvas');
-            imagePayload = canvas.toDataURL('image/png');
-        }
-
-        if (db.config.geminiKey && imagePayload) {
+        // If FastAPI backend is live, call /api/ocr/parse
+        if (engine.isLiveBackend) {
             try {
-                const base64Data = imagePayload.split(',')[1];
-                const mimeType = imagePayload.substring(imagePayload.indexOf(':') + 1, imagePayload.indexOf(';'));
-
-                const prompt = `Analyze this image (product expiry label, receipt, or handwritten note). Today is ${todayISO}.
-${nameHint ? `User hint: "${nameHint}".` : ''}
-${expOverride ? `User expiry override: "${expOverride}".` : ''}
-RULES:
-1. Find printed 'EXP', 'Expiry Date', 'Use By', 'Best Before', 'BB', 'PKD', or 'MFG'.
-2. Convert Indian dates (DD/MM/YYYY, DD.MM.YY, DD-MM-YYYY, MMM YYYY) strictly to 'YYYY-MM-DD'.
-3. Do NOT confuse MRP, weight, or barcode numbers with the expiry date.
-4. If only MFG/PKD + 'Best before X months/days' is visible, calculate exact YYYY-MM-DD expiry date.
-Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Bakery|Groceries|Snacks|Medicine|Cleaning", "qty": 1, "unit": "pcs", "price": 60, "exp": "YYYY-MM-DD", "source": "Gemini Vision OCR"}`;
-
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${db.config.geminiKey}`, {
+                const res = await fetch(`${API_BASE}/api/ocr/parse`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType, data: base64Data } }] }],
-                        generationConfig: { responseMimeType: "application/json" }
+                        text: nameHint,
+                        filename: this.uploadedFileName,
+                        user_hint: nameHint
                     })
                 });
-                const json = await res.json();
-                const rawText = json?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (rawText) {
-                    const parsed = JSON.parse(rawText.replace(/```json|```/g, '').trim());
-                    const itemObj = Array.isArray(parsed) ? parsed[0] : parsed;
-                    if (expOverride) itemObj.exp = expOverride;
+                if (res.ok) {
+                    const data = await res.json();
+                    const item = data.extracted;
+                    if (expOverride) item.expiry_date = expOverride;
                     overlay.classList.add('hidden');
-                    this.showConfirmation(itemObj);
+                    this.showConfirmation({
+                        name: item.name,
+                        cat: item.category,
+                        qty: item.quantity,
+                        unit: item.unit,
+                        price: item.price,
+                        exp: item.expiry_date,
+                        source: 'FastAPI Backend OCR Engine'
+                    });
                     return;
                 }
-            } catch (err) {
-                console.warn('Fallback to local parser:', err);
-            }
+            } catch (e) {}
         }
 
-        // 2. SMART CONTEXT-AWARE PARSER (WHEN NO API KEY IS PROVIDED)
         setTimeout(() => {
             const combinedText = `${nameHint} ${this.uploadedFileName}`.trim();
             const detectedExp = expOverride || this.extractDateFromText(combinedText, 6);
             const cleanTitle = (nameHint || this.uploadedFileName || 'Scanned Household Item')
-                .replace(/exp(?:iry)?[:\s]*\d+[\/\-\.]\d+[\/\-\.]\d+/ig, '')
+                .replace(/exp(?:iry)?[:\\s]*\\d+[\\/\\-\\.]\\d+[\\/\\-\\.]\\d+/ig, '')
                 .trim() || 'Scanned Grocery Item';
 
-            // Smart Category Detection
             let cat = 'Groceries';
             if (/milk|curd|yogurt|butter|cheese|amul/i.test(cleanTitle)) cat = 'Dairy';
             else if (/paneer|veg|tomato|fruit|spinach/i.test(cleanTitle)) cat = 'Perishables';
@@ -1721,7 +2187,7 @@ Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Ba
                 exp: detectedExp,
                 source: expOverride ? 'Exact Manual Expiry Set' : 'Smart Label Parser (Verify Date Below)'
             });
-        }, 900);
+        }, 750);
     },
 
     showConfirmation(data) {
@@ -1750,14 +2216,18 @@ Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Ba
         const name = document.getElementById('edit-name').value.trim() || 'Scanned Item';
         const cat = document.getElementById('edit-cat').value;
         const exp = document.getElementById('edit-exp').value || offsetDate(7);
+        const qty = parseFloat(document.getElementById('edit-qty').value) || 1;
+        const unit = document.getElementById('edit-unit').value || 'pcs';
+        const price = parseFloat(document.getElementById('edit-price').value) || 50;
+
         const item = {
             id: Date.now(),
             name,
             cat,
-            qty: parseFloat(document.getElementById('edit-qty').value) || 1,
-            unit: document.getElementById('edit-unit').value || 'pcs',
+            qty,
+            unit,
             exp,
-            price: parseFloat(document.getElementById('edit-price').value) || 50,
+            price,
             tip: getStorageTip(name, cat)
         };
         db.inventory.unshift(item);
@@ -1766,6 +2236,14 @@ Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Ba
         app.navigate('inventory');
         app.toast(`Saved "${name}" with expiry ${exp}!`);
         this.cancelConfirmation();
+
+        if (engine.isLiveBackend) {
+            fetch(`${API_BASE}/api/inventory`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, category: cat, quantity: qty, unit, price, expiry_date: exp })
+            }).catch(e => console.log(e));
+        }
     },
 
     // Camera Handlers
@@ -1794,7 +2272,7 @@ Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Ba
         this.processOCR('camera');
     },
 
-    // Handwriting Pad Engine
+    // Handwriting Pad
     initCanvas() {
         const canvas = document.getElementById('handwriting-canvas');
         if (!canvas) return;
@@ -1850,7 +2328,9 @@ Return ONLY a JSON object: {"name": "Product Name", "cat": "Dairy|Perishables|Ba
 };
 
 // INITIALIZE APPLICATION
-engine.init();
+window.addEventListener('DOMContentLoaded', () => {
+    engine.init();
+});
 </script>
 </body>
 </html>

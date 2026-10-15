@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Domestix Smart Household Management</title>
+    <!-- Tailwind CSS & Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .scenic-bg {
+            background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.92)), 
+                              url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 sm:p-8 min-h-screen">
+
+    <div class="w-full max-w-5xl rounded-[36px] overflow-hidden shadow-2xl flex flex-col md:flex-row border border-white/10 glass-card">
+        
+        <!-- LEFT PANEL: PROJECT BRANDING & TEAM INFO -->
+        <div class="md:w-5/12 scenic-bg p-8 sm:p-10 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="space-y-6 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                        <i data-lucide="layout-grid" class="w-6 h-6 text-white"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-tighter uppercase block leading-none">Domestix</span>
+                        <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Smart Household OS</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-black uppercase tracking-wider border border-indigo-400/30 inline-block">
+                        Project Presentation & Evaluation 2
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-black leading-tight text-white">
+                        Smart Household Management Application
+                    </h2>
+                    <p class="text-xs text-slate-300 leading-relaxed font-normal">
+                        A unified platform for inventory, shopping, maintenance, warranties and recurring tasks.
+                    </p>
+                </div>
+
+                <!-- TEAM MEMBERS (AS PER PPT SLIDE 1) -->
+                <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 space-y-3">
+                    <p class="text-[10px] font-black uppercase tracking-widest text-indigo-300 flex items-center gap-1.5">
+                        <i data-lucide="users" class="w-3.5 h-3.5"></i> Project Team Members
+                    </p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2 bg-white/5 rounded-xl border border-white/5">
+                            <p class="font-bold text-white">Saee Takale</p>
+                            <p class="text-[10px] text-slate-400">Roll No: 5185</p>
+                        </div>
+                        <div class="p-2 bg-white/5 rounded-xl border border-white/5">
+                            <p class="font-bold text-white">Ayusha Kale</p>
+                            <p class="text-[10px] text-slate-400">Roll No: 3205</p>
+                        </div>
+                        <div class="p-2 bg-white/5 rounded-xl border border-white/5">
+                            <p class="font-bold text-white">Pranav Joshi</p>
+                            <p class="text-[10px] text-slate-400">Roll No: 5208</p>
+                        </div>
+                        <div class="p-2 bg-white/5 rounded-xl border border-white/5">
+                            <p class="font-bold text-white">Vaishnavi Thite</p>
+                            <p class="text-[10px] text-slate-400">Roll No: 5188</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEM HIGHLIGHTS -->
+            <div class="pt-6 border-t border-white/10 text-[11px] text-slate-300 space-y-1.5 z-10">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                    <span>SQLite Persistent Database & REST Controller</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="scan" class="w-4 h-4 text-indigo-400"></i>
+                    <span>Smart OCR Receipt & Expiry Date Parser</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+                    <span>IEEE 2026 AI Expiry Optimizer & Meal Planner</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: LOGIN / SIGNUP FORMS & 1-CLICK DEMO -->
+        <div class="md:w-7/12 p-8 sm:p-12 bg-white flex flex-col justify-between">
+            <div>
+                <!-- Top Mode Toggle -->
+                <div class="flex items-center justify-between pb-6 border-b border-slate-100">
+                    <div>
+                        <h3 id="form-title" class="text-2xl font-black text-slate-900">Sign In to Domestix</h3>
+                        <p id="form-sub" class="text-xs text-slate-400 mt-0.5">Select a team member or enter credentials</p>
+                    </div>
+                    <div class="flex bg-slate-100 p-1 rounded-2xl">
+                        <button onclick="toggleForm('login')" id="btn-tab-login" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-indigo-600 shadow-sm">
+                            Login
+                        </button>
+                        <button onclick="toggleForm('register')" id="btn-tab-register" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-500 hover:text-slate-800">
+                            Register
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 1-CLICK DEMO LOGINS (TEAM MEMBERS) -->
+                <div id="demo-box" class="mt-6 p-4 bg-indigo-50/70 rounded-2xl border border-indigo-100 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-indigo-900 flex items-center gap-1.5">
+                            <i data-lucide="zap" class="w-3.5 h-3.5 text-indigo-600"></i> 1-Click Fast Login (Team Demo Profiles)
+                        </span>
+                        <span class="text-[9px] font-bold text-slate-500">Auto-authenticates</span>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button onclick="quickLogin('pranav', 'admin123', 'Pranav Joshi', 'Project Lead & Backend', '5208')" class="p-2.5 bg-white hover:bg-indigo-600 hover:text-white rounded-xl text-left border border-indigo-100 transition-all group shadow-sm">
+                            <p class="text-xs font-black text-slate-900 group-hover:text-white">Pranav (5208)</p>
+                            <p class="text-[9px] text-slate-400 group-hover:text-indigo-200">Backend Lead</p>
+                        </button>
+                        <button onclick="quickLogin('saee', 'saee123', 'Saee Takale', 'Lead Analyst & Inventory', '5185')" class="p-2.5 bg-white hover:bg-emerald-600 hover:text-white rounded-xl text-left border border-indigo-100 transition-all group shadow-sm">
+                            <p class="text-xs font-black text-slate-900 group-hover:text-white">Saee (5185)</p>
+                            <p class="text-[9px] text-slate-400 group-hover:text-emerald-200">Analyst</p>
+                        </button>
+                        <button onclick="quickLogin('ayusha', 'ayusha123', 'Ayusha Kale', 'UI/UX & Shopping Lead', '3205')" class="p-2.5 bg-white hover:bg-sky-600 hover:text-white rounded-xl text-left border border-indigo-100 transition-all group shadow-sm">
+                            <p class="text-xs font-black text-slate-900 group-hover:text-white">Ayusha (3205)</p>
+                            <p class="text-[9px] text-slate-400 group-hover:text-sky-200">Frontend</p>
+                        </button>
+                        <button onclick="quickLogin('vaishnavi', 'vaishnavi123', 'Vaishnavi Thite', 'Testing & Utilities Lead', '5188')" class="p-2.5 bg-white hover:bg-amber-600 hover:text-white rounded-xl text-left border border-indigo-100 transition-all group shadow-sm">
+                            <p class="text-xs font-black text-slate-900 group-hover:text-white">Vaishnavi (5188)</p>
+                            <p class="text-[9px] text-slate-400 group-hover:text-amber-200">Testing & OCR</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ALERTS / FEEDBACK -->
+                <div id="alert-msg" class="hidden mt-4 p-3.5 rounded-xl text-xs font-bold"></div>
+
+                <!-- FORM BODY -->
+                <form id="auth-form" onsubmit="handleAuth(event)" class="mt-6 space-y-4">
+                    
+                    <!-- Full Name (Only for Registration) -->
+                    <div id="field-fullname" class="hidden">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Full Name *</label>
+                        <input id="auth-fullname" type="text" placeholder="e.g. Saee Takale" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Role & Roll No (Only for Registration) -->
+                    <div id="field-role" class="hidden grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Household Role</label>
+                            <select id="auth-role" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-3 text-xs font-semibold outline-none">
+                                <option value="Household Admin">Household Admin</option>
+                                <option value="Kitchen & Stock Lead">Kitchen & Stock Lead</option>
+                                <option value="Appliances & Bills">Appliances & Bills</option>
+                                <option value="Shopping Lead">Shopping Lead</option>
+                                <option value="Family Member">Family Member</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Roll / Member ID</label>
+                            <input id="auth-roll" type="text" placeholder="e.g. 5208" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-semibold outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Username -->
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-1">Username / Email *</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                            <input id="auth-username" type="text" required placeholder="e.g. pranav, saee, or admin" value="pranav" class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs font-semibold outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase">Password *</label>
+                            <span class="text-[10px] font-bold text-slate-400">Demo: admin123</span>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                            <input id="auth-password" type="password" required placeholder="••••••••" value="admin123" class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-11 py-3 text-xs font-semibold outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                <i id="eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="btn-submit" class="w-full mt-2 bg-slate-900 hover:bg-indigo-600 text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider shadow-xl transition-all flex items-center justify-center gap-2">
+                        <span>Sign In to Dashboard</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Footer Guest Option -->
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                <a href="index.html" class="hover:text-indigo-600 font-bold flex items-center gap-1.5 transition-colors">
+                    <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                    <span>Enter as Guest / Standalone Mode</span>
+                </a>
+                <span class="text-[10px]">Domestix v2.0 • Pune</span>
+            </div>
+        </div>
+
+    </div>
+
+<script>
+    let currentMode = 'login';
+    const API_BASE = window.location.origin.includes('8000') ? '' : 'http://127.0.0.1:8000';
+
+    function toggleForm(mode) {
+        currentMode = mode;
+        const isLogin = mode === 'login';
+        
+        document.getElementById('btn-tab-login').className = isLogin 
+            ? "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-indigo-600 shadow-sm"
+            : "px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-500 hover:text-slate-800";
+        document.getElementById('btn-tab-register').className = !isLogin 
+            ? "px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-indigo-600 shadow-sm"
+            : "px-4 py-2 rounded-xl text-xs font-bold transition-all text-slate-500 hover:text-slate-800";
+
+        document.getElementById('form-title').innerText = isLogin ? "Sign In to Domestix" : "Create New Account";
+        document.getElementById('form-sub').innerText = isLogin ? "Select a team member or enter credentials" : "Join the smart household management network";
+        document.getElementById('btn-submit').innerHTML = `<span>${isLogin ? 'Sign In to Dashboard' : 'Register Account'}</span><i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+
+        document.getElementById('field-fullname').classList.toggle('hidden', isLogin);
+        document.getElementById('field-role').classList.toggle('hidden', isLogin);
+        document.getElementById('demo-box').classList.toggle('hidden', !isLogin);
+        
+        hideAlert();
+        lucide.createIcons();
+    }
+
+    function togglePasswordVisibility() {
+        const pwd = document.getElementById('auth-password');
+        const isPwd = pwd.type === 'password';
+        pwd.type = isPwd ? 'text' : 'password';
+        document.getElementById('eye-icon').setAttribute('data-lucide', isPwd ? 'eye-off' : 'eye');
+        lucide.createIcons();
+    }
+
+    function showAlert(msg, isSuccess = false) {
+        const box = document.getElementById('alert-msg');
+        box.innerText = msg;
+        box.className = `mt-4 p-3.5 rounded-xl text-xs font-bold ${isSuccess ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`;
+        box.classList.remove('hidden');
+    }
+
+    function hideAlert() {
+        document.getElementById('alert-msg').classList.add('hidden');
+    }
+
+    async function quickLogin(username, password, fullName, role, rollNo) {
+        document.getElementById('auth-username').value = username;
+        document.getElementById('auth-password').value = password;
+        
+        // Try backend login first
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                loginSuccess(data.user);
+                return;
+            }
+        } catch (e) {
+            console.log('Backend not responding, using offline auth profile');
+        }
+
+        // Offline fallback profile
+        const userObj = {
+            id: Date.now(),
+            username,
+            full_name: fullName,
+            role,
+            roll_no: rollNo,
+            avatar_color: 'indigo',
+            token: 'demo-token-' + username
+        };
+        loginSuccess(userObj);
+    }
+
+    async function handleAuth(e) {
+        e.preventDefault();
+        hideAlert();
+
+        const username = document.getElementById('auth-username').value.trim();
+        const password = document.getElementById('auth-password').value;
+        const fullName = document.getElementById('auth-fullname')?.value.trim();
+        const role = document.getElementById('auth-role')?.value;
+        const rollNo = document.getElementById('auth-roll')?.value.trim();
+
+        if (currentMode === 'login') {
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    loginSuccess(data.user);
+                } else {
+                    showAlert(data.detail || 'Invalid username or password');
+                }
+            } catch (err) {
+                // Offline fallback
+                if (password.length >= 4) {
+                    const fallbackUser = {
+                        id: 1,
+                        username,
+                        full_name: username.charAt(0).toUpperCase() + username.slice(1),
+                        role: 'Household Member',
+                        roll_no: '5000',
+                        avatar_color: 'indigo',
+                        token: 'offline-token'
+                    };
+                    loginSuccess(fallbackUser);
+                } else {
+                    showAlert('Password must be at least 4 characters');
+                }
+            }
+        } else {
+            // Register
+            if (!fullName) {
+                showAlert('Please enter your full name');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username,
+                        password,
+                        full_name: fullName,
+                        role,
+                        roll_no: rollNo,
+                        avatar_color: 'indigo'
+                    })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showAlert('Account created successfully! Redirecting...', true);
+                    setTimeout(() => loginSuccess(data.user), 1000);
+                } else {
+                    showAlert(data.detail || 'Registration failed');
+                }
+            } catch (err) {
+                const newUser = {
+                    id: Date.now(),
+                    username,
+                    full_name: fullName,
+                    role,
+                    roll_no: rollNo,
+                    avatar_color: 'indigo',
+                    token: 'offline-reg-token'
+                };
+                showAlert('Account created in offline mode! Redirecting...', true);
+                setTimeout(() => loginSuccess(newUser), 1000);
+            }
+        }
+    }
+
+    function loginSuccess(user) {
+        localStorage.setItem('domestix_auth_user', JSON.stringify(user));
+        
+        // Also sync profile name to domestix_enterprise_v3 config if present
+        try {
+            const raw = localStorage.getItem('domestix_enterprise_v3');
+            if (raw) {
+                const state = JSON.parse(raw);
+                state.config.activeProfile = user.full_name.split(' ')[0];
+                localStorage.setItem('domestix_enterprise_v3', JSON.stringify(state));
+            }
+        } catch (e) {}
+
+        showAlert(`Welcome back, ${user.full_name}! Launching Domestix...`, true);
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 800);
+    }
+
+    // Auto-check if already logged in
+    window.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+</body>
+</html>

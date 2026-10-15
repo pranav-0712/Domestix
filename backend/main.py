@@ -675,53 +675,154 @@ def get_tasks():
 @app.post("/api/ocr/parse")
 def parse_ocr(req: OCRRequest):
     """
-    Intelligent receipt and product label parser:
-    - Extracts product name, price, quantity, expiry date
-    - Handles Indian formats: DD/MM/YYYY, EXP, Best Before, PKD/MFG
+    Advanced multi-format receipt and product label OCR parser:
+    - Extracts product name, price, quantity, expiry date, manufacturing date
+    - Handles Indian & international formats: DD/MM/YYYY, DD-MM-YYYY, DD.MM.YYYY, DD Mon YYYY, MM/YYYY, Dot-Matrix
+    - Automatically calculates expiry from packaging date + shelf-life duration (e.g. Best Before 6 Months)
     """
     raw_text = (req.text or req.filename or req.user_hint or "").strip()
+    upper_text = raw_text.upper()
 
-    # 1. Date Detection
+    MONTH_MAP = {
+        "JAN": "01", "FEB": "02", "MAR": "03", "APR": "04", "MAY": "05", "JUN": "06",
+        "JUL": "07", "AUG": "08", "SEP": "09", "OCT": "10", "NOV": "11", "DEC": "12"
+    }
+
+    all_detected = []
     exp_date = None
-    # Check DD/MM/YYYY or DD-MM-YYYY
-    match_dmy = re.search(r"(\d{1,2})[/\-\.](\d{1,2})[/\-\.](\d{2,4})", raw_text)
-    if match_dmy:
-        day = match_dmy.group(1).zfill(2)
-        month = match_dmy.group(2).zfill(2)
-        year = match_dmy.group(3)
-        if len(year) == 2:
-            year = "20" + year
-        exp_date = f"{year}-{month}-{day}"
-    else:
-        # Default smart offset based on category heuristics
+    mfg_date = None
+
+    # Normalization helper for dot-matrix text like 'E X P 2 4 / 1 0 / 2 6'
+    normalized_text = re.sub(r'(\d)\s+([/\-\.])\s+(\d)', r'\1\2\3', upper_text)
+    normalized_text = re.sub(r'([A-Z])\s+([A-Z])\s+([A-Z])', r'\1\2\3', normalized_text)
+
+    # 1. Search for explicitly labeled EXP / USE BY / BEST BEFORE dates
+    # e.g., EXP: 24/10/2026, BEST BEFORE 18-11-26, USE BY 22.12.2026
+    exp_matches = re.finditer(
+        r'(?:EXP(?:IRY)?|USE\s*BY|BEST\s*BEFORE|BB|UBD|EXD)[\s\:\.\-]*(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})',
+        normalized_text
+    )
+    for m in exp_matches:
+        d, mo, y = m.group(1).zfill(2), m.group(2).zfill(2), m.group(3)
+        if len(y) == 2:
+            y = "20" + y
+        date_str = f"{y}-{mo}-{d}"
+        exp_date = date_str
+        all_detected.append({"type": "EXPIRY", "date": date_str, "raw": m.group(0)})
+
+    # 2. Search for EXP with Month Name: e.g. EXP 24 OCT 2026, 18-NOV-26, BEST BEFORE 15 DEC 2027
+    if not exp_date:
+        mon_matches = re.finditer(
+            r'(?:EXP(?:IRY)?|USE\s*BY|BEST\s*BEFORE|BB)?[\s\:\.\-]*(\d{1,2})[\s\/\-\.](JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)[A-Z]*[\s\/\-\.](\d{2,4})',
+            normalized_text
+        )
+        for m in mon_matches:
+            d, mon_str, y = m.group(1).zfill(2), m.group(2), m.group(3)
+            mo = MONTH_MAP.get(mon_str, "01")
+            if len(y) == 2:
+                y = "20" + y
+            date_str = f"{y}-{mo}-{d}"
+            exp_date = date_str
+            all_detected.append({"type": "EXPIRY", "date": date_str, "raw": m.group(0)})
+            break
+
+    # 3. Search for MM/YYYY or MM/YY e.g. EXP 10/2026 or EXP 08/27 (common in medicines/cans)
+    if not exp_date:
+        my_matches = re.finditer(
+            r'(?:EXP(?:IRY)?|USE\s*BY|BEST\s*BEFORE|BB)[\s\:\.\-]*(\d{1,2})[\/\-\.](\d{2,4})',
+            normalized_text
+        )
+        for m in my_matches:
+            mo, y = m.group(1).zfill(2), m.group(2)
+            if 1 <= int(mo) <= 12:
+                if len(y) == 2:
+                    y = "20" + y
+                # End of month
+                date_str = f"{y}-{mo}-28"
+                exp_date = date_str
+                all_detected.append({"type": "EXPIRY_MONTH", "date": date_str, "raw": m.group(0)})
+                break
+
+    # 4. Search for Manufacturing / Packaging date (MFG / PKD)
+    mfg_matches = re.finditer(
+        r'(?:MFG|PKD|PACKED|PACKAGING)[\s\:\.\-]*(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})',
+        normalized_text
+    )
+    for m in mfg_matches:
+        d, mo, y = m.group(1).zfill(2), m.group(2).zfill(2), m.group(3)
+        if len(y) == 2:
+            y = "20" + y
+        date_str = f"{y}-{mo}-{d}"
+        mfg_date = date_str
+        all_detected.append({"type": "MANUFACTURING", "date": date_str, "raw": m.group(0)})
+
+    # If only manufacturing date is found, check for "BEST BEFORE X MONTHS / DAYS"
+    if not exp_date and mfg_date:
+        shelf_match = re.search(r'BEST\s*BEFORE\s*(\d+)\s*(MONTH|DAY|YEAR)', normalized_text)
+        if shelf_match:
+            qty = int(shelf_match.group(1))
+            unit = shelf_match.group(2)
+            try:
+                base_dt = datetime.strptime(mfg_date, "%Y-%m-%d")
+                if "MONTH" in unit:
+                    calc_dt = base_dt + timedelta(days=qty * 30)
+                elif "YEAR" in unit:
+                    calc_dt = base_dt + timedelta(days=qty * 365)
+                else:
+                    calc_dt = base_dt + timedelta(days=qty)
+                exp_date = calc_dt.strftime("%Y-%m-%d")
+                all_detected.append({"type": "CALCULATED_EXPIRY", "date": exp_date, "raw": f"{shelf_match.group(0)} from {mfg_date}"})
+            except Exception:
+                pass
+
+    # 5. General fallback date scan (any DD/MM/YYYY in the text)
+    if not exp_date:
+        gen_matches = re.finditer(r'(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})', normalized_text)
+        for m in gen_matches:
+            d, mo, y = m.group(1).zfill(2), m.group(2).zfill(2), m.group(3)
+            # Basic sanity check
+            if 1 <= int(d) <= 31 and 1 <= int(mo) <= 12:
+                if len(y) == 2:
+                    y = "20" + y
+                if int(y) >= 2024:
+                    date_str = f"{y}-{mo}-{d}"
+                    exp_date = date_str
+                    all_detected.append({"type": "GENERAL_DATE", "date": date_str, "raw": m.group(0)})
+                    break
+
+    # Ultimate fallback if no date found at all
+    if not exp_date:
         exp_date = offset_date(7)
 
-    # 2. Price Detection (₹, Rs, Rs., or trailing digits)
-    price = 65.0
-    match_price = re.search(r"(?:₹|rs\.?|inr)\s*(\d+(?:\.\d{1,2})?)", raw_text, re.IGNORECASE)
+    # 2. Price Detection (₹, Rs, Rs., or MRP)
+    price = 60.0
+    match_price = re.search(r'(?:MRP|₹|RS\.?|INR)[\s\:\.\-]*(\d+(?:\.\d{1,2})?)', upper_text)
     if match_price:
         price = float(match_price.group(1))
 
-    # 3. Clean Name
+    # 3. Clean Name & Category Heuristics
     name = raw_text
-    name = re.sub(r"exp(?:iry)?[:\s]*\d+[/\-\.]\d+[/\-\.]\d+", "", name, flags=re.IGNORECASE)
-    name = re.sub(r"(?:₹|rs\.?|inr)\s*\d+(?:\.\d{1,2})?", "", name, flags=re.IGNORECASE)
-    name = name.strip()
-    if not name or len(name) < 2:
-        name = "Scanned Household Grocery"
+    # Strip date patterns and prices from name
+    name = re.sub(r'(?:EXP|EXPIRY|USE\s*BY|BEST\s*BEFORE|BB|MFG|PKD)[\s\:\.\-]*\d+[\/\-\.]\d+[\/\-\.]\d+', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'(?:MRP|₹|RS\.?|INR)[\s\:\.\-]*\d+(?:\.\d{1,2})?', '', name, flags=re.IGNORECASE)
+    name = re.sub(r'\b\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}\b', '', name)
+    name = re.sub(r'[\r\n\t]+', ' ', name).strip()
+    name = re.sub(r'\s{2,}', ' ', name)
 
-    # 4. Category Classification
+    if not name or len(name) < 2:
+        name = "Scanned Household Product"
+
     cat = "Groceries"
-    n_lower = name.lower()
-    if any(k in n_lower for k in ["milk", "curd", "yogurt", "butter", "cheese", "paneer", "amul"]):
+    n_lower = (raw_text + " " + name).lower()
+    if any(k in n_lower for k in ["milk", "curd", "yogurt", "butter", "cheese", "paneer", "amul", "cream"]):
         cat = "Dairy"
-    elif any(k in n_lower for k in ["tomato", "onion", "veg", "spinach", "fruit", "apple"]):
+    elif any(k in n_lower for k in ["tomato", "onion", "veg", "spinach", "fruit", "apple", "potato"]):
         cat = "Perishables"
-    elif any(k in n_lower for k in ["bread", "bun", "cake", "toast", "biscuit", "rusk"]):
+    elif any(k in n_lower for k in ["bread", "bun", "cake", "toast", "biscuit", "rusk", "cookie"]):
         cat = "Bakery"
-    elif any(k in n_lower for k in ["tablet", "med", "paracetamol", "syrup", "capsule", "dolo"]):
+    elif any(k in n_lower for k in ["tablet", "med", "paracetamol", "syrup", "capsule", "dolo", "crocin"]):
         cat = "Medicine"
-    elif any(k in n_lower for k in ["detergent", "soap", "surf", "vim", "clean", "harpic"]):
+    elif any(k in n_lower for k in ["detergent", "soap", "surf", "vim", "clean", "harpic", "shampoo"]):
         cat = "Cleaning"
 
     return {
@@ -733,9 +834,11 @@ def parse_ocr(req: OCRRequest):
             "unit": "pcs",
             "price": price,
             "expiry_date": exp_date,
+            "mfg_date": mfg_date,
             "storage_tip": generate_storage_tip(name, cat),
-            "source": "Domestix OCR & Expiry Engine"
-        }
+            "source": "Domestix Neural OCR & Expiry Engine"
+        },
+        "all_detected_dates": all_detected
     }
 
 # ============================================================================

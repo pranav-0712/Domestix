@@ -879,16 +879,16 @@ def ai_coach(req: AICoachRequest):
     if clean_q in greetings or any(clean_q.startswith(g + " ") for g in ["hi", "hello", "hey", "good morning", "good evening"]):
         exp_text = f"You have <b>{len(expiring_soon)} item(s)</b> ({', '.join(exp_names)}) to use soon." if expiring_soon else "All your perishables are fresh and safe!"
         advice = (
-            f"Hey there! 👋 Wonderful to chat with you!<br><br>"
-            f"I'm your <b>Domestix AI Coach</b> — your domestic co-pilot for zero food waste, tasty home recipes, and stress-free utility tracking.<br><br>"
+            f"Hello! 👋 Glad to help you with your kitchen and home chores.<br><br>"
+            f"I'm your <b>Domestix Household Assistant</b> — here to give you cooking suggestions, food storage tips, and help you keep track of home tasks.<br><br>"
             f"<b>Quick Home Update:</b><br>"
-            f"• 📦 <b>Inventory:</b> Tracking <b>{len(inv)} items</b> in your pantry.<br>"
+            f"• 📦 <b>Pantry:</b> <b>{len(inv)} items</b> currently in stock.<br>"
             f"• ⏰ <b>Expiry Watch:</b> {exp_text}<br>"
             f"• ⚡ <b>Bills:</b> {len(unpaid_bills)} pending utility payment(s).<br><br>"
-            f"What would you like to do? You can ask me:<br>"
+            f"Here are a few things you can ask:<br>"
             f"• <i>\"What can I cook for dinner?\"</i><br>"
             f"• <i>\"What's expiring next?\"</i><br>"
-            f"• <i>\"Give me a smart kitchen hack\"</i><br>"
+            f"• <i>\"Give me a food storage tip\"</i><br>"
             f"• <i>\"How do I save money on groceries?\"</i>"
         )
         return {"success": True, "response": advice, "intent": "greeting", "expiring_items": exp_names}
@@ -896,22 +896,22 @@ def ai_coach(req: AICoachRequest):
     # 2. STATUS & HOW ARE YOU
     if any(k in user_query for k in ["how are you", "how r u", "how you doing", "what's up", "whats up"]):
         advice = (
-            "I'm feeling great and running at 100%! 😊 Always excited to help you keep your home in top shape.<br><br>"
-            f"Your household is currently managing <b>{len(inv)} pantry items</b> and <b>{len(appliances)} appliances</b>.<br>"
-            "How can I help you right now? Hungry, checking groceries, or looking for appliance advice?"
+            "I'm doing great, thank you! 😊 Always here to help you manage your household easily.<br><br>"
+            f"Your household currently has <b>{len(inv)} pantry items</b> and <b>{len(appliances)} appliances</b> registered.<br>"
+            "How can I assist you right now? Hungry, checking groceries, or looking for appliance advice?"
         )
         return {"success": True, "response": advice, "intent": "smalltalk", "expiring_items": exp_names}
 
     # 3. IDENTITY & CAPABILITIES
     if any(k in user_query for k in ["who are you", "what can you do", "introduce", "what is domestix", "help me"]):
         advice = (
-            "🌟 <b>Meet Your Domestix Lively AI Coach:</b><br><br>"
-            "I'm your intelligent domestic assistant built by <b>Team Saee, Ayusha, Pranav & Vaishnavi</b> for PBL 2026. Here is what I do best:<br>"
-            "• 🥘 <b>Zero-Waste Chef:</b> Suggest delicious recipes prioritizing ingredients that expire first.<br>"
-            "• 🏷️ <b>Smart Expiry Guardian:</b> OCR scans product dates and reminds you before items spoil.<br>"
-            "• ❄️ <b>Food Preservation Science:</b> Storage tips to extend produce & dairy shelf life by 2x.<br>"
-            "• 🛠️ <b>Appliance & Utility Care:</b> Keep ACs, RO purifiers, and monthly bills on track.<br><br>"
-            "Try chatting with me casually anytime!"
+            "🏡 <b>Domestix Household Assistant:</b><br><br>"
+            "I'm your digital helper for smart home and kitchen management:<br>"
+            "• 🥘 <b>Recipe Suggestions:</b> Practical meal ideas prioritizing ingredients that expire first.<br>"
+            "• 🏷️ <b>Expiry Tracking:</b> Reminds you before food items spoil so you save money.<br>"
+            "• ❄️ <b>Food Care & Storage:</b> Practical storage tips to keep dairy and bakery fresh longer.<br>"
+            "• 🛠️ <b>Home Maintenance:</b> Reminders for AC servicing and monthly utility bills.<br><br>"
+            "Feel free to ask any question anytime!"
         )
         return {"success": True, "response": advice, "intent": "identity", "expiring_items": exp_names}
 
@@ -1017,12 +1017,12 @@ def ai_coach(req: AICoachRequest):
 
     # 12. GENERAL CONVERSATIONAL FALLBACK
     advice = (
-        f"🤖 <b>Domestix Household Intelligence:</b><br><br>"
-        f"I hear you! Here is your live home briefing:<br>"
-        f"• <b>Inventory:</b> <b>{len(inv)} items</b> tracked in pantry (₹{total_val:.0f} total stock value).<br>"
+        f"💡 <b>Domestix Household Guide:</b><br><br>"
+        f"Here is your household summary:<br>"
+        f"• <b>Pantry:</b> <b>{len(inv)} items</b> tracked in pantry (₹{total_val:.0f} total stock value).<br>"
         f"• <b>Expiring Soon:</b> {len(expiring_soon)} item(s) need attention ({', '.join(exp_names) if exp_names else 'All safe'}).<br>"
         f"• <b>Utilities:</b> {len(unpaid_bills)} pending bill(s).<br><br>"
-        f"Try asking: <i>\"Hi\"</i>, <i>\"What should I eat tonight?\"</i>, <i>\"What's expiring next?\"</i>, or <i>\"Give me a kitchen hack!\"</i>"
+        f"Try asking: <i>\"What should I eat tonight?\"</i>, <i>\"What is expiring next?\"</i>, or <i>\"Give me a food storage tip!\"</i>"
     )
     return {
         "success": True,

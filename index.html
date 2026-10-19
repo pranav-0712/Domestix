@@ -56,9 +56,9 @@
         }
 
         .sidebar-active {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--brand);
-            border-right: 4px solid var(--brand);
+            background: #4f46e5;
+            color: #ffffff;
+            font-weight: 700;
         }
 
         #handwriting-canvas {
@@ -76,40 +76,29 @@
 </head>
 <body class="flex h-screen w-full">
 
-    <!-- SIDEBAR NAVIGATION -->
-    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col z-20 shrink-0">
+    <!-- SIDEBAR NAVIGATION (Dark Blue Clean Theme) -->
+    <aside class="w-72 bg-[#0b1739] border-r border-slate-800 flex flex-col z-20 shrink-0 text-white">
         <div class="p-6 pb-4">
             <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100">
-                    <i data-lucide="layout-grid" class="text-white w-6 h-6"></i>
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-950">
+                    <i data-lucide="home" class="text-white w-5 h-5"></i>
                 </div>
                 <div>
-                    <span class="text-2xl font-black tracking-tighter text-slate-900 uppercase block leading-none">Domestix</span>
-                    <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Smart Household OS</span>
+                    <span class="text-xl font-black tracking-tight text-white uppercase block leading-none">Domestix</span>
+                    <span class="text-[10px] font-semibold text-indigo-300 tracking-wider">Household Manager</span>
                 </div>
             </div>
 
-            <!-- Team Quick Pill in Sidebar -->
-            <div onclick="app.navigate('project_info')" class="mb-4 p-3 bg-indigo-50/70 hover:bg-indigo-100/70 rounded-2xl border border-indigo-100 cursor-pointer transition-colors">
-                <div class="flex items-center justify-between text-[10px] font-black text-indigo-900 uppercase tracking-wider">
-                    <span>PBL Project Group</span>
-                    <span class="px-1.5 py-0.5 bg-indigo-200 text-indigo-800 rounded">Eval 2</span>
-                </div>
-                <p class="text-[11px] text-slate-600 mt-1 font-semibold truncate">
-                    Saee • Ayusha • Pranav • Vaishnavi
-                </p>
-            </div>
-
-            <nav class="space-y-1" id="nav-container">
+            <nav class="space-y-1.5" id="nav-container">
                 <!-- Nav generated via JS -->
             </nav>
         </div>
 
         <!-- PROFILE SWITCHER -->
-        <div class="mt-auto p-5 border-t border-slate-100 bg-slate-50/40">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Profile</p>
-                <span id="active-role-badge" class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">Pranav (5208)</span>
+        <div class="mt-auto p-4 border-t border-white/10 bg-[#070e24]">
+            <div class="flex items-center justify-between mb-2.5">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Active Member</p>
+                <span id="active-role-badge" class="text-[10px] font-bold text-indigo-200 bg-indigo-900/60 border border-indigo-700/50 px-2 py-0.5 rounded-md">Pranav</span>
             </div>
             <div class="grid grid-cols-4 gap-1.5" id="profile-switcher">
                 <!-- Profiles generated via JS -->
@@ -118,28 +107,24 @@
     </aside>
 
     <!-- MAIN VIEWPORT -->
-    <main class="flex-1 flex flex-col relative overflow-hidden">
+    <main class="flex-1 flex flex-col relative overflow-hidden bg-slate-50/60">
         
-        <!-- TOP HEADER -->
-        <header class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between z-10 shrink-0">
-            <div class="flex items-center gap-3">
-                <div id="api-status-badge" class="px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-emerald-50 text-emerald-600 border border-emerald-200">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="status-text">SQLITE + FASTAPI: 200 OK</span>
-                </div>
-                <span id="ai-mode-pill" class="hidden sm:inline-block px-3 py-1.5 rounded-full text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">
-                    AI Advisor Ready
-                </span>
+        <!-- TOP HEADER (Clean, Human & Uncluttered) -->
+        <header class="h-20 bg-white border-b border-slate-200 px-6 sm:px-8 flex items-center justify-between z-10 shrink-0">
+            <div class="flex items-center gap-2 text-slate-700">
+                <span class="text-sm font-bold text-slate-800">Smart Household Dashboard</span>
+                <span class="text-slate-300">/</span>
+                <span class="text-xs text-slate-500 font-medium" id="header-breadcrumb">Overview</span>
             </div>
 
             <div class="flex items-center gap-2.5 sm:gap-3">
-                <button onclick="app.openModal('ai-coach')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
-                    <i data-lucide="sparkles" class="w-4 h-4"></i>
-                    <span class="hidden md:inline">AI Coach</span>
+                <button onclick="app.openModal('ai-coach')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2">
+                    <i data-lucide="help-circle" class="w-4 h-4 text-indigo-600"></i>
+                    <span>Help & Tips</span>
                 </button>
-                <button onclick="app.openIngestHub('upload')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-lg shadow-indigo-100 active:scale-95">
+                <button onclick="app.openIngestHub('upload')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm active:scale-95">
                     <i data-lucide="scan-line" class="w-4 h-4"></i>
-                    <span>Smart Scan</span>
+                    <span>Scan Expiry</span>
                 </button>
 
                 <div class="h-8 w-[1px] bg-slate-200 mx-1"></div>
@@ -150,7 +135,7 @@
                         <div id="header-avatar-circle" class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black">
                             P
                         </div>
-                        <span id="header-user-name" class="hidden sm:inline">Pranav Joshi</span>
+                        <span id="header-user-name" class="hidden sm:inline font-bold">Pranav Joshi</span>
                         <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
                     </button>
                     <a href="login.html" title="Switch User or Logout" class="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors">
@@ -158,7 +143,7 @@
                     </a>
                 </div>
 
-                <button onclick="app.openModal('settings')" title="API Key & Settings" class="p-2.5 bg-slate-50 text-slate-500 rounded-xl hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-slate-200/60">
+                <button onclick="app.openModal('settings')" title="Settings" class="p-2.5 bg-slate-50 text-slate-500 rounded-xl hover:text-indigo-600 hover:bg-indigo-50 transition-colors border border-slate-200/60">
                     <i data-lucide="settings-2" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -635,30 +620,30 @@
         </div>
     </div>
 
-    <!-- MODAL 2: DOMESTIX LIVELY AI COACH -->
+    <!-- MODAL 2: HOUSEHOLD HELP & KITCHEN GUIDE -->
     <div id="modal-ai-coach" class="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[85vh]">
             <!-- Header -->
-            <div class="p-5 sm:p-6 bg-slate-900 text-white flex justify-between items-center shrink-0">
+            <div class="p-5 sm:p-6 bg-[#0b1739] text-white flex justify-between items-center shrink-0">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+                        <i data-lucide="help-circle" class="w-5 h-5"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
-                            <h3 class="font-black text-base tracking-tight">Domestix Lively AI Coach</h3>
-                            <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[9px] font-black uppercase tracking-wider flex items-center gap-1 border border-emerald-500/30">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Lively AI Active
+                            <h3 class="font-bold text-base tracking-tight">Household Help & Kitchen Guide</h3>
+                            <span class="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-200 text-[9px] font-bold uppercase tracking-wider border border-indigo-400/30">
+                                Interactive Guide
                             </span>
                         </div>
-                        <p class="text-[11px] text-slate-400">Conversational household guide • Recipes, Expiry Alerts, Storage Hacks & Home Intelligence</p>
+                        <p class="text-[11px] text-slate-300">Quick meal ideas, food storage tips, and appliance maintenance guidance</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button onclick="document.getElementById('ai-chat-history').innerHTML=''; app.renderAICoachWelcome();" title="Restart Conversation" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">
+                    <button onclick="document.getElementById('ai-chat-history').innerHTML=''; app.renderAICoachWelcome();" title="Restart Conversation" class="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
                         <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                     </button>
-                    <button onclick="app.closeModal('ai-coach')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl transition-colors">
+                    <button onclick="app.closeModal('ai-coach')" class="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
@@ -672,18 +657,17 @@
             <!-- Bottom Interactive Prompt Bar -->
             <div class="p-4 bg-white border-t border-slate-200/80 space-y-3 shrink-0">
                 <div class="flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider mr-1">Quick prompts:</span>
-                    <button onclick="app.askAI('Hi! How are you doing?')" class="text-[11px] font-bold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">👋 "Hi!"</button>
-                    <button onclick="app.askAI('I am hungry, what can I cook with my expiring ingredients?')" class="text-[11px] font-bold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">🍲 "What should I eat tonight?"</button>
-                    <button onclick="app.askAI('What is expiring soon in my inventory?')" class="text-[11px] font-bold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">⏰ "What's expiring next?"</button>
-                    <button onclick="app.askAI('Give me a clever kitchen hack to preserve food longer.')" class="text-[11px] font-bold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">💡 "Kitchen hack"</button>
-                    <button onclick="app.askAI('How can I save money on bills and groceries?')" class="text-[11px] font-bold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">💰 "Save money"</button>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Common Questions:</span>
+                    <button onclick="app.askAI('What can I cook tonight with my expiring ingredients?')" class="text-[11px] font-semibold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">🍲 "What should I cook tonight?"</button>
+                    <button onclick="app.askAI('What is expiring soon in my inventory?')" class="text-[11px] font-semibold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">⏰ "What's expiring next?"</button>
+                    <button onclick="app.askAI('Give me a good storage tip to keep groceries fresh longer.')" class="text-[11px] font-semibold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">❄️ "Food storage tips"</button>
+                    <button onclick="app.askAI('How can I save money on bills and groceries?')" class="text-[11px] font-semibold px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 rounded-full text-slate-600 transition-colors">💰 "How to save money?"</button>
                 </div>
                 <div class="flex gap-2">
-                    <input id="ai-custom-prompt" type="text" placeholder="Type 'hi', tell me you're hungry, ask for recipes, hacks, or bills..." class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500 font-medium" onkeydown="if(event.key==='Enter') app.askAI()">
-                    <button onclick="app.askAI()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-2xl font-black text-xs shadow-md shadow-indigo-100 active:scale-95 transition-all flex items-center gap-1.5">
+                    <input id="ai-custom-prompt" type="text" placeholder="Ask for recipe ideas, food storage tips, or household guidance..." class="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500 font-medium" onkeydown="if(event.key==='Enter') app.askAI()">
+                    <button onclick="app.askAI()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 rounded-2xl font-bold text-xs shadow-md shadow-indigo-100 active:scale-95 transition-all flex items-center gap-1.5">
                         <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                        <span>Send</span>
+                        <span>Ask</span>
                     </button>
                 </div>
             </div>
@@ -930,20 +914,7 @@ const engine = {
     },
 
     updateHeaderBadges() {
-        const statusBadge = document.getElementById('api-status-badge');
-        if (statusBadge) {
-            if (this.isLiveBackend) {
-                statusBadge.className = "px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200";
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span class="status-text">FASTAPI + SQLITE: 200 OK</span>`;
-            } else {
-                statusBadge.className = "px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-2 bg-indigo-50 text-indigo-700 border border-indigo-200";
-                statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-indigo-500"></span><span class="status-text">STANDALONE REST: 200 OK</span>`;
-            }
-        }
-        const pill = document.getElementById('ai-mode-pill');
-        if (pill) {
-            pill.innerText = db.config.geminiKey ? 'GEMINI VISION: LIVE' : 'SMART AI ENGINE: ACTIVE';
-        }
+        // Header kept clean and professional without robotic AI status pills
     }
 };
 
@@ -951,13 +922,11 @@ const engine = {
 const app = {
     views: [
         { id: 'dashboard', label: 'Overview', icon: 'layout-dashboard' },
-        { id: 'inventory', label: 'Inventory', icon: 'box' },
+        { id: 'inventory', label: 'Pantry Inventory', icon: 'package' },
         { id: 'shopping', label: 'Shopping List', icon: 'shopping-cart' },
         { id: 'assets', label: 'Appliances', icon: 'wrench' },
-        { id: 'bills', label: 'Utilities & Bills', icon: 'calendar-clock' },
-        { id: 'analytics', label: 'Analytics', icon: 'bar-chart-3' },
-        { id: 'backend', label: 'Architecture', icon: 'database' },
-        { id: 'project_info', label: 'Project & Team Dossier', icon: 'book-open' }
+        { id: 'bills', label: 'Utilities & Bills', icon: 'receipt' },
+        { id: 'analytics', label: 'Monthly Analytics', icon: 'bar-chart-3' }
     ],
     currentView: 'dashboard',
     invSearch: '',
@@ -980,8 +949,8 @@ const app = {
     renderNav() {
         const container = document.getElementById('nav-container');
         container.innerHTML = this.views.map(v => `
-            <button onclick="app.navigate('${v.id}')" class="w-full flex items-center gap-3.5 px-5 py-3 text-xs font-bold rounded-2xl transition-all group ${this.currentView === v.id ? 'sidebar-active' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}">
-                <i data-lucide="${v.icon}" class="w-4 h-4 transition-transform group-hover:scale-110"></i>
+            <button onclick="app.navigate('${v.id}')" class="w-full flex items-center gap-3 px-4 py-3 text-xs font-semibold rounded-xl transition-all ${this.currentView === v.id ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/40 font-bold' : 'text-slate-300 hover:text-white hover:bg-white/10'}">
+                <i data-lucide="${v.icon}" class="w-4 h-4"></i>
                 <span>${v.label}</span>
             </button>
         `).join('');
@@ -990,7 +959,7 @@ const app = {
     renderProfiles() {
         const activeObj = PROFILES.find(p => p.name === db.config.activeProfile) || PROFILES[0];
         const roleBadge = document.getElementById('active-role-badge');
-        if (roleBadge) roleBadge.innerText = `${activeObj.name} (${activeObj.rollNo})`;
+        if (roleBadge) roleBadge.innerText = activeObj.name;
 
         // Also sync header
         const headerName = document.getElementById('header-user-name');
@@ -1000,16 +969,20 @@ const app = {
 
         const container = document.getElementById('profile-switcher');
         container.innerHTML = PROFILES.map(p => `
-            <button onclick="app.setProfile('${p.name}')" class="flex flex-col items-center py-2.5 px-1 rounded-xl transition-all border ${db.config.activeProfile === p.name ? 'bg-slate-900 text-white border-slate-900 shadow-md' : 'bg-white border-slate-200/70 hover:bg-slate-100 text-slate-600'}">
-                <i data-lucide="${p.icon}" class="w-4 h-4 mb-1 ${db.config.activeProfile === p.name ? 'text-indigo-400' : 'text-slate-400'}"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter">${p.name}</span>
+            <button onclick="app.setProfile('${p.name}')" class="flex flex-col items-center py-2 px-1 rounded-xl transition-all border ${db.config.activeProfile === p.name ? 'bg-indigo-600 text-white border-indigo-400 shadow-sm' : 'bg-white/5 border-white/10 hover:bg-white/15 text-slate-300 hover:text-white'}">
+                <i data-lucide="${p.icon}" class="w-3.5 h-3.5 mb-1 ${db.config.activeProfile === p.name ? 'text-white' : 'text-slate-400'}"></i>
+                <span class="text-[9px] font-bold">${p.name}</span>
             </button>
         `).join('');
     },
 
     navigate(id) {
         this.currentView = id;
-        engine.logAPI('GET', `200 OK - Rendered view: ${id}`, `/api/v1/views/${id}`);
+        const breadcrumb = document.getElementById('header-breadcrumb');
+        if (breadcrumb) {
+            const found = this.views.find(v => v.id === id);
+            breadcrumb.innerText = found ? found.label : 'Overview';
+        }
         this.render();
     },
 
@@ -1024,7 +997,7 @@ const app = {
                 role: found.role,
                 roll_no: found.rollNo
             }));
-            this.toast(`Active operator switched to ${found.fullName} (${found.rollNo})`);
+            this.toast(`Switched profile to ${found.fullName}`);
             engine.save(`Active profile changed to ${name}`);
         }
     },
@@ -1103,41 +1076,41 @@ const app = {
 
         el.innerHTML = `
             <div class="space-y-8">
-                <!-- SCENIC HERO BANNER (Clean, Executive & Meaningful) -->
-                <div class="scenic-banner w-full rounded-[36px] p-8 sm:p-10 shadow-xl overflow-hidden relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-                    <div class="space-y-3 max-w-2xl">
-                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-bold border border-white/20">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <span>Active Operator: ${currentProfileObj.fullName} (${currentProfileObj.rollNo})</span>
+                <!-- HERO BANNER (Clean, Natural & Human-Crafted) -->
+                <div class="scenic-banner w-full rounded-[32px] p-7 sm:p-9 shadow-lg overflow-hidden relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                    <div class="space-y-2.5 max-w-2xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-[11px] font-semibold border border-white/20">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Welcome, ${currentProfileObj.fullName}</span>
                         </div>
-                        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">Domestic Operations Center</h1>
-                        <p class="text-white/85 text-xs sm:text-sm font-medium">Real-time domestic intelligence across pantry inventory, expiry prevention, appliance care & recurring utility bills.</p>
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-snug">Household Pantry & Maintenance</h1>
+                        <p class="text-white/90 text-xs sm:text-sm font-medium">Keep track of kitchen groceries, check expiry dates before items spoil, and monitor home appliances.</p>
                         
-                        <div class="flex flex-wrap items-center gap-2 pt-2">
-                            <span class="px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur border border-white/15 text-white text-xs font-semibold flex items-center gap-1.5">
-                                <i data-lucide="package" class="w-3.5 h-3.5 text-indigo-300"></i> ${db.inventory.length} Items in Pantry
+                        <div class="flex flex-wrap items-center gap-2 pt-1.5">
+                            <span class="px-3 py-1 rounded-xl bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium flex items-center gap-1.5">
+                                <i data-lucide="package" class="w-3.5 h-3.5 text-indigo-200"></i> ${db.inventory.length} In Pantry
                             </span>
-                            <span class="px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur border border-white/15 text-white text-xs font-semibold flex items-center gap-1.5">
-                                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-300"></i> ${expSoon.length} Expiring Soon
+                            <span class="px-3 py-1 rounded-xl bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium flex items-center gap-1.5">
+                                <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-200"></i> ${expSoon.length} Expiring Soon
                             </span>
-                            <span class="px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur border border-white/15 text-white text-xs font-semibold flex items-center gap-1.5">
-                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-300"></i> ${db.assets.length} Appliances
+                            <span class="px-3 py-1 rounded-xl bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium flex items-center gap-1.5">
+                                <i data-lucide="wrench" class="w-3.5 h-3.5 text-emerald-200"></i> ${db.assets.length} Appliances
                             </span>
-                            <span class="px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur border border-white/15 text-white text-xs font-semibold flex items-center gap-1.5">
-                                <i data-lucide="indian-rupee" class="w-3.5 h-3.5 text-rose-300"></i> ₹${pendingAmount} Bills Due
+                            <span class="px-3 py-1 rounded-xl bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium flex items-center gap-1.5">
+                                <i data-lucide="receipt" class="w-3.5 h-3.5 text-rose-200"></i> ₹${pendingAmount} Unpaid Bills
                             </span>
                         </div>
                     </div>
 
-                    <!-- Clean Quick Action Hub -->
-                    <div class="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0 w-full sm:w-auto">
-                        <button onclick="app.openModal('ai-coach')" class="px-6 py-3.5 rounded-2xl bg-white text-slate-900 hover:bg-emerald-50 font-black text-xs shadow-xl transition-all flex items-center justify-center gap-2.5 active:scale-95 group">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600 group-hover:rotate-12 transition-transform"></i>
-                            <span>Chat with Lively AI Coach</span>
+                    <!-- Clean Quick Action Buttons -->
+                    <div class="flex flex-col sm:flex-row lg:flex-col gap-2.5 shrink-0 w-full sm:w-auto">
+                        <button onclick="app.openModal('ai-coach')" class="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 active:scale-95">
+                            <i data-lucide="help-circle" class="w-4 h-4 text-indigo-600"></i>
+                            <span>Need Help & Cooking Tips</span>
                         </button>
-                        <button onclick="app.openIngestHub('upload')" class="px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shadow-xl border border-white/20 transition-all flex items-center justify-center gap-2.5 active:scale-95">
+                        <button onclick="app.openIngestHub('upload')" class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md border border-white/20 transition-all flex items-center justify-center gap-2 active:scale-95">
                             <i data-lucide="scan-line" class="w-4 h-4"></i>
-                            <span>Smart Scan Product Label</span>
+                            <span>Scan Expiry Date</span>
                         </button>
                     </div>
                 </div>
@@ -1150,7 +1123,7 @@ const app = {
                     ${this.cardStat('Pending Bills', '₹' + pendingAmount, 'indian-rupee', 'rose', 'bills', unpaidBills.length > 0 ? `${unpaidBills.length} unpaid bill account(s)` : 'All bills settled')}
                 </div>
 
-                <!-- TASK LIFECYCLE CENTER + AI ADVISOR CARD -->
+                <!-- TASK LIFECYCLE CENTER + KITCHEN GUIDE CARD -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 bg-white rounded-[32px] border border-slate-200/80 p-7 shadow-sm space-y-5">
                         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
@@ -1200,30 +1173,30 @@ const app = {
                         </div>
                     </div>
 
-                    <!-- PROACTIVE AI ADVISOR CARD -->
-                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-[32px] p-7 shadow-xl flex flex-col justify-between space-y-6">
-                        <div class="space-y-4">
+                    <!-- KITCHEN TIPS & RECIPE GUIDE -->
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-[32px] p-6 shadow-md flex flex-col justify-between space-y-5">
+                        <div class="space-y-3.5">
                             <div class="flex items-center justify-between">
-                                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-emerald-500/30">
-                                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Proactive AI Coach
+                                <span class="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 border border-amber-500/30">
+                                    <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Kitchen & Meal Tips
                                 </span>
-                                <span class="text-[10px] text-slate-400 font-bold">IEEE 2026 Model</span>
+                                <span class="text-[10px] text-slate-400 font-medium">Food Care Guide</span>
                             </div>
-                            <h4 class="text-xl font-black leading-snug">Zero-Waste Culinary & Home Advice</h4>
+                            <h4 class="text-lg font-bold leading-snug">Quick Recipe & Food Care Suggestions</h4>
                             <div class="p-4 bg-white/10 rounded-2xl border border-white/10 space-y-2 text-xs leading-relaxed text-slate-200">
                                 ${expSoon.length > 0 ? `
                                     <p class="font-bold text-amber-300">⚠️ Expiring Soon: ${expSoon.map(e => e.name).join(', ')}</p>
-                                    <p><b>Chef Suggestion:</b> Cook <i>Paneer & Herb Scramble</i> or <i>Creamy Oats Porridge</i> tonight to utilize ${expSoon[0].name} and save ₹${expSoon.reduce((a,b)=>a+b.price,0)} from food waste!</p>
+                                    <p><b>Quick Recipe Idea:</b> Cook a quick <i>Paneer & Herb Scramble</i> or <i>Warm Oats</i> tonight to use up ${expSoon[0].name} before it spoils!</p>
                                 ` : `
-                                    <p class="font-bold text-emerald-300">✅ Zero Immediate Food Waste Risk!</p>
-                                    <p>All perishables are within safe shelf-life windows. Keep dairy at 4°C on middle fridge shelves for maximum freshness.</p>
+                                    <p class="font-bold text-emerald-300">✅ All Perishables are Fresh</p>
+                                    <p>Store milk and dairy products on the middle shelf of your refrigerator (3°C - 4°C) to keep them fresh longer.</p>
                                 `}
                             </div>
                         </div>
 
-                        <button onclick="app.openModal('ai-coach')" class="w-full bg-white text-slate-900 hover:bg-emerald-50 py-3.5 rounded-2xl font-black text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-md">
-                            <i data-lucide="message-square-plus" class="w-4 h-4 text-emerald-600"></i>
-                            <span>Chat with Lively AI Coach</span>
+                        <button onclick="app.openModal('ai-coach')" class="w-full bg-white text-slate-900 hover:bg-slate-100 py-3 rounded-2xl font-bold text-xs transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm">
+                            <i data-lucide="help-circle" class="w-4 h-4 text-indigo-600"></i>
+                            <span>Ask for Recipes or Storage Help</span>
                         </button>
                     </div>
                 </div>
@@ -1967,7 +1940,7 @@ const app = {
                         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 5:</b> Scanning & OCR</div>
                         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 6:</b> Reminders & Alerts</div>
                         <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><b>Week 7:</b> Integration & Testing</div>
-                        <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl font-bold text-indigo-700"><b>Week 8:</b> Final Eval 2 Prep</div>
+                        <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-xl font-bold text-indigo-700"><b>Week 8:</b> Final Deployment & Testing</div>
                     </div>
                 </div>
 
@@ -2059,16 +2032,16 @@ const app = {
                 <div class="flex-1 space-y-3">
                     <div class="p-4 bg-emerald-50/90 border border-emerald-200/80 rounded-2xl rounded-tl-none text-xs text-slate-800 space-y-2 leading-relaxed shadow-sm">
                         <div class="flex items-center justify-between">
-                            <p class="font-black text-emerald-900 flex items-center gap-1.5">
-                                <span>Domestix Lively AI Coach</span>
-                                <span class="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-800 text-[9px] font-black uppercase">Online</span>
+                            <p class="font-bold text-slate-800 flex items-center gap-1.5">
+                                <span>Household Assistant & Guide</span>
+                                <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[9px] font-bold uppercase">Ready</span>
                             </p>
                             <span class="text-[10px] text-slate-400">Just now</span>
                         </div>
                         <p class="text-slate-700">
-                            Hey ${currentProfile.fullName.split(' ')[0]}! 👋 I'm your interactive domestic AI coach. You can talk to me naturally like a friend — say <b>"hi"</b>, tell me <b>"I'm hungry"</b>, or ask <b>"what is expiring soon?"</b>!
+                            Hello ${currentProfile.fullName.split(' ')[0]}! 👋 Need help in the kitchen? I can suggest recipes using expiring items, share food storage tips, or check maintenance schedules.
                         </p>
-                        <div class="pt-2 border-t border-emerald-100 flex flex-wrap gap-2 text-[11px] text-emerald-800 font-medium">
+                        <div class="pt-2 border-t border-slate-200 flex flex-wrap gap-2 text-[11px] text-slate-600 font-medium">
                             <span>📦 <b>${db.inventory.length}</b> in pantry</span>
                             <span>•</span>
                             <span>⏰ <b>${expSoon.length}</b> expiring within 4 days (${expSoon.map(e => e.name).join(', ') || 'All fresh'})</span>
@@ -2079,11 +2052,10 @@ const app = {
 
                     <!-- Suggested Starter Chips -->
                     <div class="flex flex-wrap gap-1.5">
-                        <button onclick="app.askAI('Hi! How are you doing today?')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">👋 "Hi! How are you?"</button>
-                        <button onclick="app.askAI('I am hungry, what can I cook with my expiring items?')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">🍲 "What should I eat tonight?"</button>
-                        <button onclick="app.askAI('What is expiring soon in my inventory?')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">⏰ "What's expiring next?"</button>
-                        <button onclick="app.askAI('Give me a smart kitchen hack to preserve food longer.')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">💡 "Give me a kitchen hack"</button>
-                        <button onclick="app.askAI('How can I save money on household expenses and bills?')" class="text-[11px] font-bold px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">💰 "How to save money?"</button>
+                        <button onclick="app.askAI('What can I cook with my expiring ingredients?')" class="text-[11px] font-medium px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">🍲 "What should I cook tonight?"</button>
+                        <button onclick="app.askAI('What is expiring soon in my inventory?')" class="text-[11px] font-medium px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">⏰ "What's expiring next?"</button>
+                        <button onclick="app.askAI('Give me a smart kitchen hack to preserve food longer.')" class="text-[11px] font-medium px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">💡 "Food storage tips"</button>
+                        <button onclick="app.askAI('How can I save money on household expenses and bills?')" class="text-[11px] font-medium px-3 py-1.5 bg-white border border-slate-200 rounded-full hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 transition-all">💰 "Budget & savings"</button>
                     </div>
                 </div>
             </div>
@@ -2107,7 +2079,7 @@ const app = {
                 <div class="bg-indigo-600 text-white px-4 py-3 rounded-2xl rounded-tr-none text-xs font-medium max-w-md shadow-sm">
                     ${question}
                 </div>
-                <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black shrink-0">
+                <div class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold shrink-0">
                     ${userInitial}
                 </div>
             </div>
@@ -2117,14 +2089,14 @@ const app = {
         const typingId = 'typing-' + Date.now();
         box.innerHTML += `
             <div id="${typingId}" class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black shrink-0">
-                    ✨
+                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
+                    💡
                 </div>
                 <div class="bg-slate-100 border border-slate-200 rounded-2xl rounded-tl-none px-4 py-3 text-xs text-slate-600 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-bounce"></span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.2s]"></span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.4s]"></span>
-                    <span class="text-[11px] font-bold text-slate-500 ml-1">Domestix AI is thinking...</span>
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce"></span>
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.4s]"></span>
+                    <span class="text-[11px] font-medium text-slate-500 ml-1">Finding suggestions...</span>
                 </div>
             </div>
         `;
@@ -2144,10 +2116,10 @@ const app = {
                 reply = data.response;
             }
         } catch (e) {
-            console.log('AI backend call error, falling back:', e);
+            console.log('Backend call error, using local guide:', e);
         }
 
-        // Smart lively client-side fallback if backend unreachable
+        // Smart client-side fallback
         if (!reply) {
             const qLower = question.toLowerCase();
             const expSoon = db.inventory.filter(i => {
@@ -2159,31 +2131,31 @@ const app = {
             const totalBill = unpaid.reduce((a, b) => a + Number(b.amount || 0), 0);
 
             if (qLower.match(/\b(hi|hello|hey|namaste|good morning|good evening|howdy)\b/)) {
-                reply = `Hey ${currentProfile.fullName.split(' ')[0]}! 👋 Wonderful to chat with you!<br><br>I'm your <b>Domestix AI Coach</b> — ready to help you whip up quick recipes, preserve groceries, and keep your household bills in check.<br><br>Right now you have <b>${db.inventory.length} items</b> tracked in pantry, and <b>${expSoon.length} item(s)</b> (${expNames.join(', ') || 'all safe'}) expiring soon. What's on your mind?`;
+                reply = `Hello ${currentProfile.fullName.split(' ')[0]}! 👋 Glad to help you with household management.<br><br>Right now you have <b>${db.inventory.length} items</b> tracked in your pantry, and <b>${expSoon.length} item(s)</b> (${expNames.join(', ') || 'all safe'}) expiring soon. How can I help you today?`;
             } else if (qLower.match(/\b(how are you|how r u|what's up|whats up)\b/)) {
-                reply = `I'm doing fantastic, thank you! 😊 Ready to help you tackle meal prep, check food dates, or answer any kitchen questions. How can I assist you right now?`;
+                reply = `I'm doing well, thank you! 😊 Ready to help you with meal planning, grocery preservation, and home reminders. What would you like to check?`;
             } else if (qLower.match(/\b(hungry|cook|recipe|meal|eat|dinner|lunch|breakfast)\b/)) {
                 if (expNames.length > 0) {
-                    reply = `🥘 <b>Zero-Waste Chef Suggestion:</b> You have <b>${expNames.join(', ')}</b> expiring soon! Let's cook with them tonight:<br><br>• <b>Dinner Idea:</b> Prepare a warm <i>Spiced Paneer Stir-Fry with Toasted Bread</i> or a <i>Creamy Oats Porridge Bowl</i>.<br>• <b>Impact:</b> Prevents food waste and saves ~₹${expSoon.reduce((a,b)=>a+b.price, 0)} worth of groceries!`;
+                    reply = `🥘 <b>Recipe Recommendation:</b> You have <b>${expNames.join(', ')}</b> expiring soon! Here is a quick idea:<br><br>• <b>Dinner Idea:</b> Prepare a warm <i>Paneer Stir-Fry with Bread Toast</i> or a <i>Creamy Oats Porridge Bowl</i>.<br>• <b>Cooking Time:</b> Ready in under 12 minutes! Saves ₹${expSoon.reduce((a,b)=>a+b.price, 0)} worth of groceries from being wasted.`;
                 } else {
-                    reply = `🍲 <b>Fresh Meal Inspiration:</b> All your perishable stock is fresh! You can make a delicious <i>Masala Oats Porridge</i> or <i>Crispy Whole Wheat Toast</i> in under 10 minutes.`;
+                    reply = `🍲 <b>Fresh Meal Inspiration:</b> All your perishable stock is fresh! You can make a wholesome <i>Masala Oats Porridge</i> or <i>Crispy Whole Wheat Toast</i> in under 10 minutes.`;
                 }
             } else if (qLower.match(/\b(expir|spoil|waste|shelf life)\b/)) {
                 reply = expSoon.length > 0 
-                    ? `⏰ <b>Expiry Alert:</b> You have ${expSoon.length} item(s) nearing expiry:<br>${expSoon.map(i => `• <b>${i.name}</b> (${this.daysDiff(i.exp)} days left)`).join('<br>')}<br><br>💡 Use these first or freeze portions to extend shelf-life!`
-                    : `🎉 <b>All Clear:</b> Zero items are expiring in the next 4 days. Everything in your pantry is fresh!`;
+                    ? `⏰ <b>Expiring Items:</b> You have ${expSoon.length} item(s) nearing expiry:<br>${expSoon.map(i => `• <b>${i.name}</b> (${this.daysDiff(i.exp)} days left)`).join('<br>')}<br><br>💡 Try to use these first or freeze portions to keep them fresh.`
+                    : `✅ <b>All Clear:</b> No items are expiring in the next 4 days. Everything in your pantry is fresh!`;
             } else if (qLower.match(/\b(hack|tip|storage|preserve)\b/)) {
-                reply = `💡 <b>Domestix Kitchen Hacks:</b><br><br>1. <b>Bread:</b> Never refrigerate bread — it turns stale 6x faster in the cold due to starch retrogradation! Keep in a bread box or freeze slices.<br>2. <b>Fresh Paneer:</b> Keep submerged in cold drinking water; change water every 2 days to maintain creaminess.<br>3. <b>Milk:</b> Keep on middle fridge shelves, never in door racks where warm air hits repeatedly.`;
+                reply = `💡 <b>Helpful Food Storage Tips:</b><br><br>1. <b>Bread:</b> Store in a cool, dry bread box at room temperature. Avoid keeping it in the fridge as cold temperatures make starch crystallize faster.<br>2. <b>Fresh Paneer:</b> Keep submerged in cold drinking water inside an airtight container; change water every 2 days.<br>3. <b>Milk:</b> Keep on middle fridge shelves rather than the door shelves where temperature changes frequently.`;
             } else if (qLower.match(/\b(money|budget|save|cost)\b/)) {
-                reply = `💰 <b>Smart Savings Blueprint:</b><br><br>1. <b>Zero Food Waste:</b> Eating your expiring groceries saves ~₹1,500 - ₹3,000 monthly.<br>2. <b>Pending Bills:</b> Settle ₹${totalBill} in pending bills before due dates to avoid penalty fees.<br>3. <b>AC Maintenance:</b> Keeping air filters clean cuts AC power draw by 15%!`;
+                reply = `💰 <b>Household Savings Tips:</b><br><br>1. <b>Avoid Food Spoilage:</b> Cooking meals with expiring groceries saves ₹1,500 - ₹3,000 every month.<br>2. <b>Utility Bills:</b> You have ₹${totalBill} in pending bills. Paying on time avoids late fee penalties.<br>3. <b>Appliance Care:</b> Cleaning AC filters monthly keeps electricity bills lower.`;
             } else if (qLower.match(/\b(joke|funny)\b/)) {
-                reply = `😄 <i>Why did the tomato blush?</i><br>👉 <b>Because it saw the salad dressing!</b> 🥗😂`;
+                reply = `😄 <i>Why did the tomato blush?</i><br>👉 <b>Because it saw the salad dressing!</b> 🥗`;
             } else {
-                reply = `🤖 <b>Domestix AI Coach:</b> Tracking <b>${db.inventory.length} pantry items</b> and <b>${db.assets.length} appliances</b>. Ask me for recipes, food storage hacks, bill alerts, or appliance maintenance schedules!`;
+                reply = `💡 <b>Household Guide:</b> Currently tracking <b>${db.inventory.length} pantry items</b> and <b>${db.assets.length} appliances</b>. Ask anytime for recipe ideas, food storage tips, or appliance maintenance schedules!`;
             }
         }
 
-        // Realistic lively delay
+        // Delay
         await new Promise(r => setTimeout(r, 350));
 
         // Remove typing indicator and append response
@@ -2192,13 +2164,13 @@ const app = {
 
         box.innerHTML += `
             <div class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-black shrink-0 shadow-sm">
-                    ✨
+                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
+                    💡
                 </div>
                 <div class="space-y-2 max-w-lg">
-                    <div class="p-4 bg-emerald-50/90 border border-emerald-200/80 rounded-2xl rounded-tl-none text-xs text-slate-800 leading-relaxed shadow-sm">
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl rounded-tl-none text-xs text-slate-800 leading-relaxed shadow-sm">
                         <div class="flex items-center justify-between mb-1.5">
-                            <span class="font-black text-emerald-900">Domestix AI Coach</span>
+                            <span class="font-bold text-slate-900">Household Assistant</span>
                             <span class="text-[10px] text-slate-400">Just now</span>
                         </div>
                         <div>${reply}</div>
